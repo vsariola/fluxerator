@@ -1,0 +1,1000 @@
+%macro export_func 1
+   global _%1
+   _%1:
+%endmacro
+%define USE_SECTIONS
+%define SAMPLE_RATE	44100
+%define MAX_INSTRUMENTS	14
+%define MAX_VOICES 1
+%define HLD 1
+%define BPM 133.000000
+%define MAX_PATTERNS 132
+%define PATTERN_SIZE_SHIFT 4
+%define PATTERN_SIZE (1 << PATTERN_SIZE_SHIFT)
+%define	MAX_TICKS (MAX_PATTERNS*PATTERN_SIZE)
+%define	SAMPLES_PER_TICK 4973
+%define DEF_LFO_NORMALIZE 0.0000502645
+%define	MAX_SAMPLES	(SAMPLES_PER_TICK*MAX_TICKS)
+;%define 	GO4K_USE_16BIT_OUTPUT
+;%define 	GO4K_USE_GROOVE_PATTERN
+;%define 	GO4K_USE_ENVELOPE_RECORDINGS
+;%define 	GO4K_USE_NOTE_RECORDINGS
+%define 	GO4K_CLIP_OUTPUT
+%define 	GO4K_USE_DLL
+%define 	GO4K_USE_PAN
+%define 	GO4K_USE_GLOBAL_DLL
+%define 	GO4K_USE_FSTG
+%define 	GO4K_USE_FLD
+%define 	GO4K_USE_ENV_CHECK
+%define 	GO4K_USE_ENV_MOD_GM
+%define		GO4K_USE_ENV_MOD_ADR
+%define 	GO4K_USE_VCO_CHECK
+%define 	GO4K_USE_VCO_PHASE_OFFSET
+%define 	GO4K_USE_VCO_SHAPE
+%define 	GO4K_USE_VCO_MOD_TM
+%define 	GO4K_USE_VCO_MOD_CM
+%define 	GO4K_USE_VCO_MOD_GM
+%define 	GO4K_USE_VCO_MOD_SM
+%define 	GO4K_USE_VCF_CHECK
+%define 	GO4K_USE_VCF_MOD_FM
+%define 	GO4K_USE_VCF_HIGH
+%define 	GO4K_USE_VCF_BAND
+%define 	GO4K_USE_VCF_PEAK
+%define 	GO4K_USE_DST_CHECK
+%define		GO4K_USE_DLL_CHORUS
+%define		GO4K_USE_DLL_CHORUS_CLAMP
+%define 	GO4K_USE_DLL_DAMP
+%define 	GO4K_USE_DLL_DC_FILTER
+%define 	GO4K_USE_FSTG_CHECK
+%define		GO4K_USE_WAVESHAPER_CLIP
+%define 	GO4K_USE_FLD_MOD_VM
+%define	MAX_DELAY			65536
+%define MAX_UNITS			48
+%define	MAX_UNIT_SLOTS	    9
+%define GO4K_BEGIN_CMDDEF(def_name)
+%define GO4K_END_CMDDEF db 0
+%define GO4K_BEGIN_PARAMDEF(def_name)
+%define GO4K_END_PARAMDEF
+GO4K_ENV_ID		equ		1
+%macro	GO4K_ENV 5
+	db	%1
+	db	%2
+	db	%3
+	db	%4
+	db	%5
+%endmacro
+%define	ATTAC(val)		val	
+%define	DECAY(val)		val	
+%define	SUSTAIN(val)	val	
+%define	RELEASE(val)	val	
+%define	GAIN(val)		val	
+struc	go4kENV_val
+	.attac		resd	1
+	.decay		resd	1
+	.sustain	resd	1
+	.release	resd	1
+	.gain		resd	1
+	.size
+endstruc
+struc	go4kENV_wrk
+	.state		resd	1
+	.level		resd	1
+	.gm			resd	1
+	.am			resd	1
+	.dm			resd	1
+	.sm			resd	1
+	.rm			resd	1
+	.size
+endstruc
+%define ENV_STATE_ATTAC		0
+%define ENV_STATE_DECAY		1
+%define ENV_STATE_SUSTAIN	2
+%define ENV_STATE_RELEASE	3
+%define ENV_STATE_OFF		4
+GO4K_VCO_ID		equ		2
+%macro	GO4K_VCO 8
+	db	%1
+	db	%2
+%ifdef GO4K_USE_VCO_PHASE_OFFSET	
+	db	%3
+%endif	
+%ifdef GO4K_USE_VCO_GATE	
+	db	%4
+%endif	
+	db	%5
+%ifdef GO4K_USE_VCO_SHAPE	
+	db	%6
+%endif	
+	db	%7
+	db	%8
+%endmacro
+%define	TRANSPOSE(val)	val	
+%define	DETUNE(val)		val	
+%define	PHASE(val)		val	
+%define	GATES(val)		val	
+%define	COLOR(val)		val	
+%define	SHAPE(val)		val 
+%define	FLAGS(val)		val	
+%define SINE		0x01
+%define TRISAW		0x02
+%define PULSE		0x04
+%define NOISE		0x08
+%define LFO			0x10
+%define GATE		0x20
+%define	VCO_STEREO	0x40
+struc	go4kVCO_val
+	.transpose	resd	1
+	.detune		resd	1
+%ifdef GO4K_USE_VCO_PHASE_OFFSET	
+	.phaseofs	resd	1
+%endif	
+%ifdef GO4K_USE_VCO_GATE	
+	.gate		resd	1
+%endif	
+	.color		resd	1
+%ifdef GO4K_USE_VCO_SHAPE	
+	.shape		resd	1
+%endif	
+	.gain		resd	1
+	.flags		resd	1	
+	.size
+endstruc
+struc	go4kVCO_wrk
+	.phase		resd	1
+	.tm			resd	1
+	.dm			resd	1
+	.fm			resd	1
+	.pm			resd	1
+	.cm			resd	1
+	.sm			resd	1
+	.gm			resd	1
+	.phase2		resd	1
+	.size
+endstruc
+GO4K_VCF_ID		equ		3
+%macro	GO4K_VCF 3
+	db	%1
+	db	%2
+	db	%3
+%endmacro
+%define LOWPASS		0x1
+%define HIGHPASS	0x2
+%define BANDPASS	0x4
+%define	BANDSTOP	0x3
+%define ALLPASS		0x7
+%define	PEAK		0x8
+%define STEREO		0x10
+%define	FREQUENCY(val)	val
+%define	RESONANCE(val)	val
+%define	VCFTYPE(val)	val
+struc	go4kVCF_val
+	.freq		resd	1
+	.res		resd	1
+	.type		resd	1
+	.size
+endstruc
+struc	go4kVCF_wrk
+	.low		resd	1
+	.high		resd	1
+	.band		resd	1
+	.freq		resd	1
+	.fm			resd	1
+	.rm			resd	1
+	.low2		resd	1
+	.high2		resd	1
+	.band2		resd	1
+	.size
+endstruc
+GO4K_DST_ID		equ		4
+%macro	GO4K_DST 3
+	db	%1
+%ifdef GO4K_USE_DST_SH
+	db	%2
+%ifdef GO4K_USE_DST_STEREO
+	db	%3
+%endif
+%else
+%ifdef GO4K_USE_DST_STEREO
+	db	%3
+%endif
+%endif
+%endmacro
+%define	DRIVE(val)		val
+%define	SNHFREQ(val)	val
+%define	FLAGS(val)		val
+struc	go4kDST_val
+	.drive		resd	1
+%ifdef GO4K_USE_DST_SH	
+	.snhfreq	resd	1
+%endif	
+	.flags		resd	1
+	.size
+endstruc
+struc	go4kDST_wrk
+	.out		resd	1
+	.snhphase	resd	1
+	.dm			resd	1
+	.sm			resd	1
+	.out2		resd	1
+	.size
+endstruc
+GO4K_DLL_ID		equ		5
+%macro	GO4K_DLL 8
+	db	%1
+	db	%2
+	db	%3
+%ifdef GO4K_USE_DLL_DAMP	
+	db	%4
+%endif		
+%ifdef GO4K_USE_DLL_CHORUS	
+	db	%5
+	db	%6
+%endif
+	db	%7
+	db	%8
+%endmacro
+%define PREGAIN(val)	val
+%define	DRY(val)		val
+%define	FEEDBACK(val)	val
+%define	DEPTH(val)		val
+%define DAMP(val)		val
+%define	DELAY(val)		val
+%define	COUNT(val)		val
+struc	go4kDLL_val
+	.pregain	resd	1
+	.dry		resd	1
+	.feedback	resd	1
+%ifdef GO4K_USE_DLL_DAMP	
+	.damp		resd	1	
+%endif
+%ifdef GO4K_USE_DLL_CHORUS
+	.freq		resd	1
+	.depth
+%endif
+	.delay		resd	1
+	.count		resd	1
+	.size
+endstruc
+struc	go4kDLL_wrk
+	.index		resd	1
+	.store		resd	1
+	.dcin		resd	1
+	.dcout		resd	1
+%ifdef GO4K_USE_DLL_CHORUS
+	.phase		resd	1
+%endif
+	.buffer		resd	MAX_DELAY
+	.size
+endstruc
+struc	go4kDLL_wrk2
+ .pm			resd	1
+ .fm			resd	1
+ .im			resd	1
+ .dm			resd	1
+ .sm			resd	1
+ .am			resd	1
+ .size
+endstruc
+GO4K_FOP_ID	equ			6
+%macro	GO4K_FOP 1
+	db	%1
+%endmacro
+%define	OP(val)			val
+%define FOP_POP			0x1
+%define FOP_ADDP		0x2
+%define FOP_MULP		0x3
+%define FOP_PUSH		0x4
+%define FOP_XCH			0x5
+%define FOP_ADD			0x6
+%define FOP_MUL			0x7
+%define FOP_ADDP2		0x8
+%define FOP_LOADNOTE	0x9
+%define FOP_MULP2		0xa
+struc	go4kFOP_val
+	.flags		resd	1
+	.size
+endstruc
+struc	go4kFOP_wrk
+	.size
+endstruc
+GO4K_FST_ID		equ		7
+%macro	GO4K_FST 2
+	db	%1
+	dw	%2
+%endmacro
+%define	AMOUNT(val)		val
+%define	DEST(val)		val
+%define	FST_SET			0x0000
+%define	FST_ADD			0x4000
+%define	FST_POP			0x8000
+struc	go4kFST_val
+	.amount		resd	1
+	.op1		resd	1
+	.size
+endstruc
+struc	go4kFST_wrk
+	.size
+endstruc
+GO4K_PAN_ID		equ		8
+%macro	GO4K_PAN 1
+%ifdef GO4K_USE_PAN
+	db	%1
+%endif
+%endmacro
+%define	PANNING(val)	val
+struc	go4kPAN_val
+%ifdef GO4K_USE_PAN
+	.panning	resd	1
+%endif
+	.size
+endstruc
+struc	go4kPAN_wrk
+	.pm			resd	1
+	.size
+endstruc
+GO4K_OUT_ID		equ		9
+%macro	GO4K_OUT 2
+	db	%1
+%ifdef GO4K_USE_GLOBAL_DLL	
+	db	%2
+%endif	
+%endmacro
+%define	AUXSEND(val)	val
+struc	go4kOUT_val
+	.gain		resd	1
+%ifdef GO4K_USE_GLOBAL_DLL	
+	.auxsend	resd	1
+%endif
+	.size
+endstruc
+struc	go4kOUT_wrk
+	.am			resd	1
+	.gm			resd	1
+	.size
+endstruc
+GO4K_ACC_ID		equ		10
+%macro	GO4K_ACC 1
+	db	%1
+%endmacro
+%define OUTPUT			0
+%define	AUX				8
+%define ACCTYPE(val)	val
+struc	go4kACC_val
+	.acctype	resd	1
+	.size
+endstruc
+struc	go4kACC_wrk
+	.size
+endstruc
+%ifdef GO4K_USE_FLD
+GO4K_FLD_ID	equ		11
+%macro	GO4K_FLD 1
+	db	%1
+%endmacro
+%define	VALUE(val)	val
+struc	go4kFLD_val
+	.value		resd	1
+	.size
+endstruc
+struc	go4kFLD_wrk
+	.vm			resd	1
+	.size
+endstruc
+%endif
+%ifdef GO4K_USE_FSTG
+GO4K_FSTG_ID	equ		12
+%macro	GO4K_FSTG 2
+	db	%1
+	dw	%2
+%endmacro
+struc	go4kFSTG_val
+	.amount		resd	1
+	.op1		resd	1
+	.size
+endstruc
+struc	go4kFSTG_wrk
+	.size
+endstruc
+%endif
+struc	go4k_instrument
+	.release	resd	1
+	.note		resd	1
+	.workspace	resd	MAX_UNITS*MAX_UNIT_SLOTS
+	.dlloutl	resd	1
+	.dlloutr	resd	1
+	.outl		resd	1
+	.outr		resd	1
+	.size
+endstruc
+struc	go4k_synth
+	.instruments	resb	go4k_instrument.size * MAX_INSTRUMENTS * MAX_VOICES
+	.global			resb	go4k_instrument.size * MAX_VOICES
+	.size
+endstruc
+%ifdef USE_SECTIONS
+section .g4kmuc1 data align=1
+%else
+section .data align=1
+%endif
+go4k_patterns
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	40, HLD, 0, 0, 40, HLD, 0, 0, 40, HLD, 0, 0, 40, HLD, 0, 0, 
+	db	40, HLD, 0, 0, 40, HLD, 0, 0, 40, HLD, 0, 0, 40, 0, 40, 0, 
+	db	40, HLD, 0, 0, 40, HLD, 0, 0, 0, 0, 40, 0, 0, 0, 0, 40, 
+	db	40, HLD, 0, 40, HLD, 0, 40, HLD, 0, 0, 0, 0, 0, 40, 0, 40, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 102, 
+	db	16, 4, 0, 40, 16, 0, 52, 4, 28, 0, 16, 4, 16, 40, 0, 64, 
+	db	16, 4, 0, 40, 16, 0, 52, 4, 28, 112, 16, 4, 16, 40, 0, 64, 
+	db	16, 4, 0, 64, 16, 0, 52, 40, 52, 112, 16, 4, 16, 40, 0, 64, 
+	db	0, 78, 0, 0, 0, 0, 64, 0, 0, 0, 0, 66, 0, 0, 0, 0, 
+	db	40, 88, 40, 88, 76, 64, 40, 88, 40, 64, 40, 97, 40, 76, 40, 88, 
+	db	0, 0, 40, 0, 0, 0, 40, 0, 0, 0, 40, 0, 0, 0, 40, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 78, 54, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 
+	db	0, 54, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 66, HLD, 
+	db	HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	0, 78, HLD, 0, 69, HLD, HLD, 0, 0, 68, HLD, HLD, HLD, 0, 66, HLD, 
+	db	HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	28, 87, 76, 28, 52, 28, 87, 28, 52, 76, 28, 100, 76, 52, 87, 28, 
+	db	40, 0, 40, 0, 40, 0, 40, 0, 40, 0, 40, 0, 40, 0, 40, 0, 
+	db	0, 0, 42, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 66, 0, 0, 0, 0, 
+	db	90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 
+	db	0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 
+	db	0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 
+	db	87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 
+	db	0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 
+	db	0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 
+	db	89, 0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 
+	db	0, 0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 
+	db	0, 88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 
+	db	88, 0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 
+	db	0, 0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 
+	db	0, 91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 
+	db	91, 0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 
+	db	0, 0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 
+	db	0, 90, 0, 0, 87, 0, 0, 89, 0, 0, 88, 0, 0, 91, 0, 0, 
+	db	66, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 
+	db	42, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 
+	db	66, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	78, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 
+	db	0, 0, 0, 0, 78, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, HLD, 0, 0, 0, 0, 0, 0, 78, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 43, HLD, HLD, 0, 0, 0, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 
+	db	0, 0, 87, HLD, HLD, HLD, HLD, HLD, 0, 0, 0, 0, 0, 0, 0, 0, 
+	db	0, 0, 0, 0, 0, 0, 0, 0, 0, 43, HLD, HLD, HLD, HLD, HLD, 0, 
+	db	6, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 
+	db	HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, HLD, 0, 0, 
+go4k_patterns_end
+%ifdef USE_SECTIONS
+section .g4kmuc2 data align=1
+%else
+section .data
+%endif
+go4k_pattern_lists
+Instrument0List		db	0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 
+Instrument1List		db	5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 0, 0, 
+Instrument2List		db	0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 0, 0, 0, 
+Instrument3List		db	0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 0, 0, 0, 
+Instrument4List		db	0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0, 0, 0, 
+Instrument5List		db	12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 13, 14, 12, 0, 0, 0, 
+Instrument6List		db	0, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 17, 18, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 15, 16, 0, 0, 0, 
+Instrument7List		db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+Instrument8List		db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+Instrument9List		db	0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 22, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 
+Instrument10List		db	0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 0, 0, 0, 0, 0, 0, 0, 
+Instrument11List		db	38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 40, 40, 40, 40, 40, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 43, 42, 43, 42, 43, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 44, 45, 44, 46, 44, 47, 44, 48, 44, 48, 44, 48, 44, 48, 44, 48, 49, 40, 50, 40, 43, 44, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0, 42, 43, 42, 43, 42, 43, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 42, 43, 42, 43, 42, 43, 42, 43, 42, 43, 42, 43, 42, 43, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+Instrument12List		db	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+Instrument15List		db	0, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 56, 55, 40, 40, 40, 40, 40, 40, 40, 40, 0, 0, 
+go4k_pattern_lists_end
+%ifdef USE_SECTIONS
+section .g4kmuc3 data align=1
+%else
+section .data
+%endif
+go4k_synth_instructions
+GO4K_BEGIN_CMDDEF(Instrument0)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FLD_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument1)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FLD_ID
+	db GO4K_FOP_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_VCF_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument2)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument3)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_FOP_ID
+	db GO4K_FST_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument4)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument5)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FST_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument6)
+	db GO4K_ENV_ID
+	db GO4K_VCO_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument7)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument8)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument9)
+	db GO4K_ENV_ID
+	db GO4K_VCO_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_VCF_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument10)
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_DLL_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument11)
+	db GO4K_ENV_ID
+	db GO4K_VCO_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_ENV_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_PAN_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_DLL_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument12)
+	db GO4K_ENV_ID
+	db GO4K_VCO_ID
+	db GO4K_FOP_ID
+	db GO4K_FOP_ID
+	db GO4K_FST_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_PAN_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Instrument15)
+	db GO4K_ENV_ID
+	db GO4K_VCO_ID
+	db GO4K_FSTG_ID
+	db GO4K_FOP_ID
+	db GO4K_PAN_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+GO4K_BEGIN_CMDDEF(Global)
+	db GO4K_ACC_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_VCF_ID
+	db GO4K_DLL_ID
+	db GO4K_FOP_ID
+	db GO4K_ACC_ID
+	db GO4K_FOP_ID
+	db GO4K_OUT_ID
+GO4K_END_CMDDEF
+go4k_synth_instructions_end
+%ifdef USE_SECTIONS
+section .g4kmuc4 data align=1
+%else
+section .data
+%endif
+go4k_synth_parameter_values
+GO4K_BEGIN_PARAMDEF(Instrument0)
+	GO4K_ENV	ATTAC(0),DECAY(76),SUSTAIN(53),RELEASE(86),GAIN(128)
+	GO4K_FST	AMOUNT(116),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(108),GATES(0),COLOR(128),SHAPE(85),GAIN(128),FLAGS(SINE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_ENV	ATTAC(0),DECAY(64),SUSTAIN(0),RELEASE(64),GAIN(128)
+	GO4K_FST	AMOUNT(79),DEST(2*MAX_UNIT_SLOTS+1+FST_SET+FST_POP)
+	GO4K_FST	AMOUNT(87),DEST(7*MAX_UNIT_SLOTS+0+FST_SET)
+	GO4K_FLD	VALUE(64)
+	GO4K_VCF	FREQUENCY(14),RESONANCE(27),VCFTYPE(LOWPASS)
+	GO4K_DLL	PREGAIN(54),DRY(0),FEEDBACK(107),DAMP(105),FREQUENCY(0),DEPTH(0),DELAY(9),COUNT(8)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_VCF	FREQUENCY(9),RESONANCE(45),VCFTYPE(HIGHPASS)
+	GO4K_VCF	FREQUENCY(65),RESONANCE(118),VCFTYPE(PEAK)
+	GO4K_PAN	PANNING(64)
+	GO4K_OUT	GAIN(107), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument1)
+	GO4K_ENV	ATTAC(0),DECAY(66),SUSTAIN(1),RELEASE(75),GAIN(128)
+	GO4K_FST	AMOUNT(113),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(57),PHASE(0),GATES(0),COLOR(64),SHAPE(64),GAIN(88),FLAGS(PULSE)
+	GO4K_VCO	TRANSPOSE(76),DETUNE(52),PHASE(90),GATES(0),COLOR(1),SHAPE(16),GAIN(128),FLAGS(TRISAW)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_FOP	OP(FOP_LOADNOTE)
+	GO4K_FLD	VALUE(43)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_FST	AMOUNT(0),DEST(3*MAX_UNIT_SLOTS+1+FST_SET)
+	GO4K_FST	AMOUNT(0),DEST(2*MAX_UNIT_SLOTS+1+FST_SET)
+	GO4K_FST	AMOUNT(68),DEST(14*MAX_UNIT_SLOTS+4+FST_SET)
+	GO4K_FST	AMOUNT(68),DEST(0*MAX_UNIT_SLOTS+4+FST_SET)
+	GO4K_FST	AMOUNT(128),DEST(14*MAX_UNIT_SLOTS+2+FST_SET+FST_POP)
+	GO4K_ENV	ATTAC(0),DECAY(66),SUSTAIN(0),RELEASE(64),GAIN(42)
+	GO4K_FST	AMOUNT(86),DEST(16*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(19),RESONANCE(63),VCFTYPE(LOWPASS)
+	GO4K_VCF	FREQUENCY(83),RESONANCE(43),VCFTYPE(PEAK)
+	GO4K_VCF	FREQUENCY(40),RESONANCE(66),VCFTYPE(LOWPASS)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(72),DRY(83),FEEDBACK(64),DAMP(64),FREQUENCY(14),DEPTH(42),DELAY(17),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_DLL	PREGAIN(72),DRY(83),FEEDBACK(64),DAMP(64),FREQUENCY(16),DEPTH(42),DELAY(18),COUNT(1)
+	GO4K_OUT	GAIN(91), AUXSEND(8)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument2)
+	GO4K_ENV	ATTAC(0),DECAY(54),SUSTAIN(6),RELEASE(74),GAIN(128)
+	GO4K_FST	AMOUNT(99),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(88),DETUNE(56),PHASE(67),GATES(0),COLOR(128),SHAPE(64),GAIN(128),FLAGS(SINE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCF	FREQUENCY(42),RESONANCE(33),VCFTYPE(LOWPASS)
+	GO4K_DLL	PREGAIN(115),DRY(7),FEEDBACK(112),DAMP(116),FREQUENCY(14),DEPTH(74),DELAY(19),COUNT(1)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(106),DRY(43),FEEDBACK(64),DAMP(64),FREQUENCY(11),DEPTH(29),DELAY(18),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_DLL	PREGAIN(108),DRY(43),FEEDBACK(64),DAMP(66),FREQUENCY(17),DEPTH(32),DELAY(20),COUNT(1)
+	GO4K_OUT	GAIN(23), AUXSEND(17)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument3)
+	GO4K_ENV	ATTAC(29),DECAY(61),SUSTAIN(0),RELEASE(64),GAIN(128)
+	GO4K_FST	AMOUNT(86),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(0),GATES(0),COLOR(64),SHAPE(127),GAIN(55),FLAGS(NOISE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCF	FREQUENCY(123),RESONANCE(73),VCFTYPE(HIGHPASS)
+	GO4K_FOP	OP(FOP_LOADNOTE)
+	GO4K_FST	AMOUNT(84),DEST(0*MAX_UNIT_SLOTS+3+FST_SET+FST_POP)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(78),DRY(97),FEEDBACK(64),DAMP(128),FREQUENCY(105),DEPTH(45),DELAY(21),COUNT(1)
+	GO4K_OUT	GAIN(21), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument4)
+	GO4K_ENV	ATTAC(0),DECAY(62),SUSTAIN(0),RELEASE(87),GAIN(128)
+	GO4K_FST	AMOUNT(116),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(0),GATES(0),COLOR(64),SHAPE(64),GAIN(128),FLAGS(NOISE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCF	FREQUENCY(85),RESONANCE(64),VCFTYPE(LOWPASS)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(98),DRY(93),FEEDBACK(64),DAMP(128),FREQUENCY(102),DEPTH(84),DELAY(22),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_OUT	GAIN(25), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument5)
+	GO4K_ENV	ATTAC(0),DECAY(68),SUSTAIN(1),RELEASE(103),GAIN(128)
+	GO4K_FST	AMOUNT(112),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(76),DETUNE(48),PHASE(0),GATES(0),COLOR(16),SHAPE(64),GAIN(128),FLAGS(PULSE)
+	GO4K_VCO	TRANSPOSE(52),DETUNE(49),PHASE(63),GATES(0),COLOR(72),SHAPE(64),GAIN(128),FLAGS(PULSE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCO	TRANSPOSE(52),DETUNE(44),PHASE(0),GATES(0),COLOR(19),SHAPE(127),GAIN(125),FLAGS(TRISAW)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_FOP	OP(FOP_LOADNOTE)
+	GO4K_FST	AMOUNT(38),DEST(10*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_ENV	ATTAC(0),DECAY(92),SUSTAIN(0),RELEASE(88),GAIN(128)
+	GO4K_FST	AMOUNT(74),DEST(2*MAX_UNIT_SLOTS+5+FST_SET)
+	GO4K_FST	AMOUNT(94),DEST(13*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(17),RESONANCE(128),VCFTYPE(LOWPASS)
+	GO4K_DLL	PREGAIN(21),DRY(128),FEEDBACK(91),DAMP(83),FREQUENCY(0),DEPTH(0),DELAY(9),COUNT(8)
+	GO4K_VCF	FREQUENCY(14),RESONANCE(47),VCFTYPE(PEAK)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(80),DRY(100),FEEDBACK(64),DAMP(64),FREQUENCY(14),DEPTH(27),DELAY(18),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_DLL	PREGAIN(80),DRY(100),FEEDBACK(64),DAMP(64),FREQUENCY(16),DEPTH(27),DELAY(23),COUNT(1)
+	GO4K_OUT	GAIN(57), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument6)
+	GO4K_ENV	ATTAC(76),DECAY(64),SUSTAIN(126),RELEASE(0),GAIN(128)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(49),PHASE(0),GATES(0),COLOR(3),SHAPE(38),GAIN(117),FLAGS(TRISAW)
+	GO4K_VCO	TRANSPOSE(67),DETUNE(48),PHASE(0),GATES(0),COLOR(3),SHAPE(21),GAIN(128),FLAGS(TRISAW)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_VCO	TRANSPOSE(68),DETUNE(15),PHASE(0),GATES(0),COLOR(36),SHAPE(22),GAIN(128),FLAGS(TRISAW)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_VCO	TRANSPOSE(40),DETUNE(61),PHASE(0),GATES(0),COLOR(102),SHAPE(124),GAIN(128),FLAGS(SINE)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(85),DRY(98),FEEDBACK(64),DAMP(128),FREQUENCY(95),DEPTH(39),DELAY(24),COUNT(1)
+	GO4K_OUT	GAIN(83), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument7)
+	GO4K_ENV	ATTAC(0),DECAY(58),SUSTAIN(7),RELEASE(86),GAIN(128)
+	GO4K_FST	AMOUNT(79),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(0),GATES(0),COLOR(64),SHAPE(111),GAIN(28),FLAGS(NOISE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_FOP	OP(FOP_LOADNOTE)
+	GO4K_FST	AMOUNT(67),DEST(0*MAX_UNIT_SLOTS+4+FST_SET)
+	GO4K_FST	AMOUNT(119),DEST(2*MAX_UNIT_SLOTS+7+FST_SET+FST_POP)
+	GO4K_ENV	ATTAC(0),DECAY(59),SUSTAIN(0),RELEASE(64),GAIN(128)
+	GO4K_FST	AMOUNT(76),DEST(9*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(103),RESONANCE(86),VCFTYPE(BANDPASS)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(69),DRY(110),FEEDBACK(64),DAMP(128),FREQUENCY(90),DEPTH(53),DELAY(25),COUNT(1)
+	GO4K_OUT	GAIN(38), AUXSEND(2)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument8)
+	GO4K_ENV	ATTAC(20),DECAY(63),SUSTAIN(23),RELEASE(85),GAIN(128)
+	GO4K_FST	AMOUNT(100),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(0),GATES(0),COLOR(64),SHAPE(64),GAIN(98),FLAGS(NOISE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCF	FREQUENCY(109),RESONANCE(101),VCFTYPE(HIGHPASS)
+	GO4K_PAN	PANNING(57)
+	GO4K_DLL	PREGAIN(72),DRY(102),FEEDBACK(64),DAMP(128),FREQUENCY(70),DEPTH(17),DELAY(26),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_OUT	GAIN(20), AUXSEND(3)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument9)
+	GO4K_ENV	ATTAC(6),DECAY(91),SUSTAIN(83),RELEASE(0),GAIN(128)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(62),PHASE(0),GATES(0),COLOR(8),SHAPE(105),GAIN(128),FLAGS(TRISAW)
+	GO4K_VCO	TRANSPOSE(76),DETUNE(43),PHASE(64),GATES(0),COLOR(116),SHAPE(72),GAIN(128),FLAGS(SINE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(51),PHASE(0),GATES(0),COLOR(65),SHAPE(64),GAIN(99),FLAGS(PULSE)
+	GO4K_FOP	OP(FOP_ADDP)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_ENV	ATTAC(74),DECAY(0),SUSTAIN(128),RELEASE(0),GAIN(128)
+	GO4K_FST	AMOUNT(36),DEST(4*MAX_UNIT_SLOTS+7+FST_SET)
+	GO4K_FST	AMOUNT(77),DEST(15*MAX_UNIT_SLOTS+4+FST_SET)
+	GO4K_FST	AMOUNT(26),DEST(14*MAX_UNIT_SLOTS+4+FST_SET)
+	GO4K_FST	AMOUNT(90),DEST(2*MAX_UNIT_SLOTS+6+FST_SET+FST_POP)
+	GO4K_VCO	TRANSPOSE(28),DETUNE(64),PHASE(24),GATES(0),COLOR(128),SHAPE(48),GAIN(128),FLAGS(SINE)
+	GO4K_FST	AMOUNT(74),DEST(1*MAX_UNIT_SLOTS+6+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(105),RESONANCE(53),VCFTYPE(PEAK)
+	GO4K_VCF	FREQUENCY(0),RESONANCE(83),VCFTYPE(HIGHPASS)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(112),DRY(92),FEEDBACK(64),DAMP(128),FREQUENCY(70),DEPTH(56),DELAY(27),COUNT(1)
+	GO4K_OUT	GAIN(41), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument10)
+	GO4K_ENV	ATTAC(0),DECAY(47),SUSTAIN(0),RELEASE(93),GAIN(128)
+	GO4K_FST	AMOUNT(125),DEST(0*MAX_UNIT_SLOTS+2+FST_SET)
+	GO4K_VCO	TRANSPOSE(76),DETUNE(61),PHASE(0),GATES(0),COLOR(119),SHAPE(60),GAIN(128),FLAGS(SINE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_DLL	PREGAIN(82),DRY(63),FEEDBACK(64),DAMP(64),FREQUENCY(11),DEPTH(80),DELAY(17),COUNT(1)
+	GO4K_DLL	PREGAIN(30),DRY(57),FEEDBACK(122),DAMP(111),FREQUENCY(12),DEPTH(33),DELAY(9),COUNT(8)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(69),DRY(16),FEEDBACK(64),DAMP(68),FREQUENCY(11),DEPTH(53),DELAY(17),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_DLL	PREGAIN(69),DRY(9),FEEDBACK(64),DAMP(72),FREQUENCY(17),DEPTH(51),DELAY(28),COUNT(1)
+	GO4K_OUT	GAIN(41), AUXSEND(20)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument11)
+	GO4K_ENV	ATTAC(0),DECAY(73),SUSTAIN(64),RELEASE(0),GAIN(128)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(60),PHASE(0),GATES(0),COLOR(62),SHAPE(64),GAIN(128),FLAGS(PULSE)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(42),PHASE(0),GATES(0),COLOR(1),SHAPE(94),GAIN(128),FLAGS(TRISAW)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_ENV	ATTAC(101),DECAY(0),SUSTAIN(128),RELEASE(0),GAIN(128)
+	GO4K_FST	AMOUNT(100),DEST(8*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(59),RESONANCE(34),VCFTYPE(PEAK)
+	GO4K_VCF	FREQUENCY(15),RESONANCE(46),VCFTYPE(LOWPASS)
+	GO4K_DLL	PREGAIN(112),DRY(128),FEEDBACK(72),DAMP(40),FREQUENCY(12),DEPTH(30),DELAY(18),COUNT(1)
+	GO4K_PAN	PANNING(64)
+	GO4K_DLL	PREGAIN(85),DRY(68),FEEDBACK(64),DAMP(49),FREQUENCY(51),DEPTH(91),DELAY(29),COUNT(1)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_DLL	PREGAIN(85),DRY(68),FEEDBACK(64),DAMP(49),FREQUENCY(49),DEPTH(91),DELAY(30),COUNT(1)
+	GO4K_OUT	GAIN(30), AUXSEND(15)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument12)
+	GO4K_ENV	ATTAC(0),DECAY(0),SUSTAIN(124),RELEASE(0),GAIN(128)
+	GO4K_VCO	TRANSPOSE(64),DETUNE(64),PHASE(0),GATES(0),COLOR(64),SHAPE(64),GAIN(128),FLAGS(NOISE)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_FOP	OP(FOP_LOADNOTE)
+	GO4K_FST	AMOUNT(110),DEST(5*MAX_UNIT_SLOTS+4+FST_SET+FST_POP)
+	GO4K_VCF	FREQUENCY(11),RESONANCE(117),VCFTYPE(BANDPASS)
+	GO4K_DLL	PREGAIN(81),DRY(80),FEEDBACK(87),DAMP(9),FREQUENCY(0),DEPTH(0),DELAY(18),COUNT(1)
+	GO4K_PAN	PANNING(64)
+	GO4K_OUT	GAIN(3), AUXSEND(41)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Instrument15)
+	GO4K_ENV	ATTAC(0),DECAY(64),SUSTAIN(64),RELEASE(64),GAIN(128)
+	GO4K_VCO	TRANSPOSE(0),DETUNE(8),PHASE(24),GATES(0),COLOR(102),SHAPE(27),GAIN(128),FLAGS(SINE)
+	GO4K_FSTG	AMOUNT(71),DEST((10*go4k_instrument.size*MAX_VOICES/4)+(0*MAX_UNIT_SLOTS+4)+(go4k_instrument.workspace/4)+FST_SET)
+	GO4K_FOP	OP(FOP_MULP)
+	GO4K_PAN	PANNING(64)
+	GO4K_OUT	GAIN(0), AUXSEND(0)
+GO4K_END_PARAMDEF
+GO4K_BEGIN_PARAMDEF(Global)
+	GO4K_ACC	ACCTYPE(AUX)
+	GO4K_VCF	FREQUENCY(51),RESONANCE(128),VCFTYPE(HIGHPASS)
+	GO4K_DLL	PREGAIN(40),DRY(128),FEEDBACK(125),DAMP(0),FREQUENCY(10),DEPTH(17),DELAY(1),COUNT(8)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_VCF	FREQUENCY(51),RESONANCE(128),VCFTYPE(HIGHPASS)
+	GO4K_DLL	PREGAIN(40),DRY(0),FEEDBACK(125),DAMP(0),FREQUENCY(8),DEPTH(18),DELAY(9),COUNT(8)
+	GO4K_FOP	OP(FOP_XCH)
+	GO4K_ACC	ACCTYPE(OUTPUT)
+	GO4K_FOP	OP(FOP_ADDP2)
+	GO4K_OUT	GAIN(64), AUXSEND(0)
+GO4K_END_PARAMDEF
+go4k_synth_parameter_values_end
+%ifdef USE_SECTIONS
+section .g4kmuc5 data align=1
+%else
+section .data
+%endif
+%ifdef GO4K_USE_DLL
+global _go4k_delay_times
+_go4k_delay_times
+	dw 0
+	dw 1116
+	dw 1188
+	dw 1276
+	dw 1356
+	dw 1422
+	dw 1492
+	dw 1556
+	dw 1618
+	dw 1140
+	dw 1212
+	dw 1300
+	dw 1380
+	dw 1446
+	dw 1516
+	dw 1580
+	dw 1642
+	dw 19894
+	dw 29842
+	dw 1216
+	dw 14921
+	dw 224
+	dw 208
+	dw 59684
+	dw 896
+	dw 448
+	dw 288
+	dw 912
+	dw 39789
+	dw 1072
+	dw 1184
+%endif
