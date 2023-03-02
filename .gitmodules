@@ -1,0 +1,3 @@
+[submodule "extern/rocket"]
+	path = extern/rocket
+	url = https://github.com/rocket/rocket
