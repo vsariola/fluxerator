@@ -9,6 +9,7 @@
 #include <mmreg.h>
 #include <dsound.h>
 #include <GL/gl.h>
+#include <stdio.h>
 
 // Defining OPENGL_DEBUG makes the CHECK_ERRORS() macro show the error code in messagebox.
 // Without the macro, CHECK_ERRORS() is a nop.
@@ -17,15 +18,19 @@
 #include "glext.h"
 #include "4klang.h"
 #include <shader.inl>
-#include <minirocket.h>
+#include "../extern/rocket/lib/sync.h"
+#include <minirocket_tracknames.h>
 
-#pragma data_seg(".pixelfmt")
+#define sizeof_array(array) (int)(sizeof(array) / sizeof(array[0]))
+
+static struct sync_device* device;
+static struct sync_cb cb;
+
 static const PIXELFORMATDESCRIPTOR pfd = {
 	sizeof(pfd), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, PFD_TYPE_RGBA,
 	32, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
 };
 
-#pragma data_seg(".screensettings")
 static DEVMODE screenSettings = {
 	{0}, 0, 0, sizeof(screenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT,
 	{0}, 0, 0, 0, 0, 0, {0}, 0, 0, XRES, YRES, 0, 0,
@@ -37,7 +42,6 @@ static DEVMODE screenSettings = {
 	#endif
 };
 
-#pragma data_seg(".wavefmt")
 static WAVEFORMATEX WaveFMT =
 {
 #ifdef FLOAT_32BIT
@@ -53,30 +57,108 @@ static WAVEFORMATEX WaveFMT =
 	0                                    // extension not needed
 };
 
-#pragma data_seg(".descfmt")
 static DSBUFFERDESC bufferDesc = { sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), NULL, &WaveFMT, NULL };
 
-#pragma data_seg(".pids")
 // static allocation saves a few bytes
 static int pidMain;
 
-static float TIME_DIVISOR = SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE);
+LPDIRECTSOUNDBUFFER buf;
+
+static void xpause(void* data, int flag) {
+	(void)data;
+
+	if (flag)
+		buf->Stop();
+	else
+		buf->Play(0, 0, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void xset_row(void* data, int row) {
+	DWORD newpos = row * 2 * SAMPLES_PER_TICK * sizeof(SAMPLE_TYPE);
+	buf->SetCurrentPosition(newpos);
+	(void)data;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static int xis_playing(void* data) {
+	(void)data;
+	DWORD playStatus;
+	buf->GetStatus(&playStatus);
+	return playStatus & DSBSTATUS_PLAYING == DSBSTATUS_PLAYING;
+}
+
+int rocket_init(const char* prefix) {
+	device = sync_create_device(prefix);
+	if (!device) {
+		printf("Unable to create rocketDevice\n");
+		return 0;
+	}
+
+	cb.is_playing = xis_playing;
+	cb.pause = xpause;
+	cb.set_row = xset_row;
+
+	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT)) {
+		printf("Rocket failed to connect\n");
+		return 0;
+	}
+
+	printf("Rocket connected.\n");
+
+	return 1;
+}
+
+static int rocket_update() {
+	DWORD playCursor;
+	buf->GetCurrentPosition(&playCursor, NULL);
+	int row = (int)(playCursor / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE)));
+
+	if (sync_update(device, row, &cb, 0))
+		sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT);
+
+	return 1;
+}
+
+static const struct sync_track* s_tracks[NUM_TRACKS];
 
 void entrypoint(void)
 {
+	device = sync_create_device("localsync");
+	if (!device) {
+		printf("Unable to create rocketDevice\n");
+		return;
+	}
+
+	cb.is_playing = xis_playing;
+	cb.pause = xpause;
+	cb.set_row = xset_row;
+
+	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT)) {
+		printf("Rocket failed to connect\n");
+		return;
+	}
+
+	printf("Rocket connected.\n");
+
+
+	for (int i = 0; i < sizeof_array(s_trackNames); ++i)
+		s_tracks[i] = sync_get_track(device, s_trackNames[i]);
+
 	// initialize window
-	#ifdef WINDOW
-		HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
-		const HDC hDC = GetDC(window);
-	#else // full screen, the default behaviour
-		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
-		ShowCursor(0);
-		HWND window = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
-		const HDC hDC = GetDC(window);
-	#endif
+#ifdef WINDOW
+	HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
+	const HDC hDC = GetDC(window);
+#else // full screen, the default behaviour
+	ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
+	ShowCursor(0);
+	HWND window = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+	const HDC hDC = GetDC(window);
+#endif
 
 	LPDIRECTSOUND lpds;
-	LPDIRECTSOUNDBUFFER buf;
 	DirectSoundCreate(0, &lpds, 0);
 
 	lpds->SetCooperativeLevel(window, DSSCL_PRIORITY);
@@ -95,8 +177,6 @@ void entrypoint(void)
 	// create and compile shader programs
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shader_sync_frag);
 	CHECK_ERRORS();
-	
-	buf->Play(0, 0, 0);
 
 	DWORD playStatus;
 
@@ -109,6 +189,7 @@ void entrypoint(void)
 		// output parameter and the implementation presumably does a NULL check
 		PeekMessage(0, 0, 0, 0, PM_REMOVE);
 #endif
+		rocket_update();
 
 		// render with the primary shader
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidMain);
@@ -116,27 +197,32 @@ void entrypoint(void)
 
 		DWORD playCursor;
 		buf->GetCurrentPosition(&playCursor, NULL);
-		
+
 		float syncs[NUM_SYNCS];
-		minirocket_sync(
-			(float)(long)(playCursor) / TIME_DIVISOR,
-			syncs
-		);
+		syncs[0] = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));
+
+		float row_f = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));
+		for (int i = 0; i < NUM_TRACKS; ++i) {
+			syncs[i + 1] = sync_get_val(s_tracks[i], row_f);
+		}
+
 		for (int i = 0; i < MAX_INSTRUMENTS; i++) {
-			DWORD synctime = (playCursor / (2 * sizeof(SAMPLE_TYPE) * 256));
-			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime * 32 + i];
-			syncs[1 + NUM_TRACKS + MAX_INSTRUMENTS + i] = _4klang_envelope_buffer[synctime * 32 + i];
+			DWORD synctime = playCursor / (2 * sizeof(SAMPLE_TYPE) * 256) * 32;
+			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime + i];
+			syncs[1 + NUM_TRACKS + MAX_INSTRUMENTS + i] = _4klang_envelope_buffer[synctime + i];
 		}
 
 		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(0, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
-	
+
 		glRects(-1, -1, 1, 1);
 		CHECK_ERRORS();
 
 		SwapBuffers(hDC);
 
-	} while (!GetAsyncKeyState(VK_ESCAPE) && (buf->GetStatus(&playStatus),playStatus) & DSBSTATUS_PLAYING);
+	} while (!GetAsyncKeyState(VK_ESCAPE));
+
+	sync_save_tracks(device);
 
 	ExitProcess(0);
 }

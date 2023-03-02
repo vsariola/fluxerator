@@ -18,6 +18,20 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+file(GLOB RKT_SYNC_SRCS
+	${CMAKE_CURRENT_SOURCE_DIR}/extern/rocket/lib/*.c
+)
+add_library(rkt_sync ${RKT_SYNC_SRCS})
+target_include_directories(rkt_sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/extern/rocket/lib)
+set(RKT_PROJECT_INCLUDES ${RKT_PROJECT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/extern/rocket/lib)
+
+find_program(PYTHON NAMES python python3)
+if(NOT PYTHON)
+  message(FATAL_ERROR "Python not found. Get Python from: https://www.python.org/")
+else()
+  message(STATUS "Python found at: ${PYTHON}")
+endif()
+
 # tell nasm that we want 32-bit OBJ file
 
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
