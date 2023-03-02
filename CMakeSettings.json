@@ -1,32 +1,16 @@
 ﻿{
   "configurations": [
     {
-      "name": "rel-med-1080",
-      "generator": "Ninja",
-      "configurationType": "MinSizeRel",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "variables": [
-        {
-          "name": "VALIDATE_SHADERS",
-          "value": "False",
-          "type": "BOOL"
-        }
-      ]
-    },
-    {
-      "name": "dev-1080",
+      "name": "debug-1080",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
       "variables": [
         {
           "name": "COMPRESS_LEVEL",
@@ -41,7 +25,7 @@
       ]
     },
     {
-      "name": "rel-heavy-1080",
+      "name": "medium-1080",
       "generator": "Ninja",
       "configurationType": "MinSizeRel",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -49,7 +33,29 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "VALIDATE_SHADERS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "heavy-1080",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
       "variables": [
         {
           "name": "COMPRESS_LEVEL",
@@ -64,7 +70,7 @@
       ]
     },
     {
-      "name": "dev-720",
+      "name": "debug-720",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
@@ -72,7 +78,9 @@
       "cmakeCommandArgs": "-DXRES=1280 -DYRES=720",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
       "variables": [
         {
           "name": "COMPRESS_LEVEL",
@@ -87,6 +95,126 @@
         {
           "name": "WINDOW",
           "value": "True",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "medium-720",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=1280 -DYRES=720",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "VALIDATE_SHADERS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "heavy-720",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=1280 -DYRES=720",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "HEAVY",
+          "type": "STRING"
+        },
+        {
+          "name": "VALIDATE_SHADERS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "debug-2160",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=3840 -DYRES=2160",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "OPENGL_DEBUG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "WINDOW",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "medium-2160",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=3840 -DYRES=2160",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "VALIDATE_SHADERS",
+          "value": "False",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "heavy-2160",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=3840 -DYRES=2160",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "HEAVY",
+          "type": "STRING"
+        },
+        {
+          "name": "VALIDATE_SHADERS",
+          "value": "False",
           "type": "BOOL"
         }
       ]
