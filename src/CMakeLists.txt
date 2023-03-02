@@ -12,7 +12,12 @@ endif()
  
 message(STATUS "Configuration options (configure with cmake -D...): WINDOW=${WINDOW} MINIFY_SHADERS=${MINIFY_SHADERS} COMPRESS_LEVEL=${COMPRESS_LEVEL}")
 
-set(SHADER_HANDTUNED_INL shader.inl)
+find_program(PYTHON NAMES python python3)
+if(NOT PYTHON)
+  message(FATAL_ERROR "Python not found. Get Python from: https://www.python.org/")
+else()
+  message(STATUS "Python found at: ${PYTHON}")
+endif()
 
 find_program(SHADER_MINIFIER NAMES shader_minifier)
 if(NOT SHADER_MINIFIER)
@@ -22,6 +27,7 @@ else()
 endif()
 
 # Generate the minified inlined shaders        
+
 set(SHADER_FRAG ../data/shader.frag)    
 set(SHADER_CONFIGURED_FRAG configured/shader.frag)    
 set(SHADER_SYNC_FRAG shader_sync.frag)    
@@ -46,6 +52,23 @@ add_custom_command(
     DEPENDS ${SYNCS_ROCKET} ${SHADER_CONFIGURED_FRAG}
 )    
 
+# intro
+
+set(exesuffix "")
+if (NOT YRES EQUAL "1080")
+    set(exesuffix "${exesuffix}-${YRES}")
+endif()
+if (WINDOW)
+    set(exesuffix "${exesuffix}-window")
+    message("Defining WINDOW macro")
+    add_compile_definitions(WINDOW)
+endif()
+if (OPENGL_DEBUG)    
+    set(exesuffix "${exesuffix}-gldebug")
+    message("Defining OPENGL_DEBUG macro")
+    add_compile_definitions(OPENGL_DEBUG)
+endif()
+
 add_executable(intro WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc")
 set_property(TARGET intro APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
 target_compile_definitions(intro PUBLIC XRES=${XRES} YRES=${YRES})
@@ -53,34 +76,6 @@ target_link_libraries(intro opengl32.lib winmm.lib libucrt.lib dsound.lib)
 target_include_directories(intro PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
 target_include_directories(intro PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
 target_include_directories(intro PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
-
-add_executable(sync WIN32 "syncmain.cpp" "4klang.asm" ${SHADERS} minirocket_tracknames.h)
-set_property(TARGET sync APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
-target_compile_definitions(sync PUBLIC XRES=${XRES} YRES=${YRES})
-target_link_libraries(sync rkt_sync opengl32.lib winmm.lib libucrt.lib dsound.lib ws2_32.lib)
-target_include_directories(sync PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
-target_include_directories(sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
-target_include_directories(sync PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
-
-#set_target_properties(intro PROPERTIES
-#                      RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/dist
-#)
-
-set(exename "unnamed8k")
-if (NOT YRES EQUAL "1080")
-    set(exename "${exename}-${YRES}")
-endif()
-if (WINDOW)
-    set(exename "${exename}-window")
-    message("Defining WINDOW macro")
-    target_compile_definitions(intro PUBLIC WINDOW)
-    target_compile_definitions(sync PUBLIC WINDOW)
-endif()
-if (OPENGL_DEBUG)
-    set(exename "${exename}-debug")
-    target_compile_definitions(intro PUBLIC OPENGL_DEBUG)
-    target_compile_definitions(sync PUBLIC OPENGL_DEBUG)
-endif()
 
 set_property(TARGET intro APPEND PROPERTY COMPILE_FLAGS " /Os /O1 /Ob1 /Oi /Oy /GS- /arch:IA32 /fp:fast")
 if(NOT COMPRESS_LEVEL STREQUAL OFF)    
@@ -97,32 +92,43 @@ if (NOT COMPRESS_LEVEL STREQUAL OFF)
     # TBD: do we add /SATURATE
     if (COMPRESS_LEVEL STREQUAL LIGHT) 
         set(CRINKLER_FLAGS "${CRINKLER_FLAGS} /HASHTRIES:100 /COMPMODE:INSTANT /ORDERTRIES:2000")
-        set(exename "${exename}-light")
+        set(exesuffix "${exesuffix}-light")
     elseif (COMPRESS_LEVEL STREQUAL HEAVY)
         set(CRINKLER_FLAGS "${CRINKLER_FLAGS} /HASHTRIES:1000 /COMPMODE:VERYSLOW /ORDERTRIES:30000")              
     else()
         set(CRINKLER_FLAGS "${CRINKLER_FLAGS} /HASHTRIES:300 /COMPMODE:SLOW /ORDERTRIES:9000 /TRUNCATEFLOATS:32")
-        set(exename "${exename}-medium")
+        set(exesuffix "${exesuffix}-medium")
     endif()   
     
     # we drop the whole manifest creation from the front; did not find a way to disable it from CMake otherwise        
     set (CMAKE_CXX_LINK_EXECUTABLE "${CRINKLER} <OBJECTS> /out:<TARGET> ${CRINKLER_FLAGS} <LINK_LIBRARIES>")
 else()
-    set(exename "${exename}-uncompressed")
+    set(exesuffix "${exesuffix}-uncompressed")
 endif()
 
-#set_target_properties(intro PROPERTIES OUTPUT_NAME ${exename})
 add_custom_command(TARGET intro POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:intro> ${PROJECT_SOURCE_DIR}/dist/${exename}.exe
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:intro> ${PROJECT_SOURCE_DIR}/dist/unnamed8k${exesuffix}.exe
 )
 
-add_custom_command(TARGET sync POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/
-)
+# sync
+
+if(COMPRESS_LEVEL STREQUAL OFF)    
+    add_executable(sync WIN32 "syncmain.cpp" "4klang.asm" ${SHADERS} minirocket_tracknames.h)
+    set_property(TARGET sync APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
+    target_compile_definitions(sync PUBLIC XRES=${XRES} YRES=${YRES})
+    target_link_libraries(sync rkt_sync opengl32.lib winmm.lib libucrt.lib dsound.lib ws2_32.lib)
+    target_include_directories(sync PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
+    target_include_directories(sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
+    target_include_directories(sync PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
+
+    add_custom_command(TARGET sync POST_BUILD
+       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe
+    )
+endif()
 
 if (VALIDATE_SHADERS)
     find_program(GLSLANGVALIDATOR NAMES glslangValidator)
-    if (NOT VALIDATE_SHADERS)
+    if (NOT GLSLANGVALIDATOR)
         message(WARNING "glslangValidator not found. Cannot validate shaders. Get glslangValidator from: https://github.com/KhronosGroup/glslang")            
         set(VALIDATE_SHADERS OFF)
     endif()
