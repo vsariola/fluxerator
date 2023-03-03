@@ -233,7 +233,5 @@ void entrypoint(void)
 
 	} while (!GetAsyncKeyState(VK_ESCAPE));
 
-	sync_save_tracks(device);
-
 	ExitProcess(0);
 }
