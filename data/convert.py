@@ -42,8 +42,8 @@ def main():
     curstart = 0
     defines['ROW'] = '0'
     for i, t in enumerate(track):
-        k = [(int(k.attributes['row'].value), val, int(k.attributes['interpolation'].value))
-             for k in t.getElementsByTagName('key') if start_row <= (val := float(k.attributes['value'].value)) <= end_row]
+        k = [(row, float(k.attributes['value'].value), int(k.attributes['interpolation'].value))
+             for k in t.getElementsByTagName('key') if start_row <= (row := int(k.attributes['row'].value)) <= end_row]
         k.sort(key=lambda k: k[0])
         if len(k) == 0:
             k = [(start_row, 0, 0)]
