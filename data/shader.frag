@@ -81,7 +81,7 @@ vec2 map (in vec3 p) {
     e.xy *= r2(p.z+syncs[ROW]/16.);
     pModPolar(e.xy,3.);
     e.z = mod(e.z,10.)-5.;
-    float dw = sdBox(e-vec3(1.5,0,0),vec3(0,2.,0));
+    float dw = length(e.xz-vec2(1.5));
     if (dw < res.x ) {
         res = vec2(dw,0.);
     }
