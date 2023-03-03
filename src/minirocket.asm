@@ -2,6 +2,7 @@ bits 32
 
 section		.rkconst	data	align=1
 c_three		dw		    3
+c_256		dw		    256
 %include "minirocket.inc"
 
 section		.rocket     code    align=1
@@ -26,14 +27,10 @@ _minirocket_sync@8:
     jmp     .syncloop
 .key:
     call    interpolate
-    movzx   eax, byte [esi+value_data-row_data+edx]
-	push    eax
-    fild	dword [esp] ; v0 a
-    pop     eax
-    movzx   eax, byte [esi+value_data-row_data+1+edx]
-    push    eax
-	fild	dword [esp] ; v1 v0 a
-    pop     eax
+    fild    word [esi+value_data-row_data+edx*2]    ; v0*256 a	    
+    fidiv   word [esi+c_256-row_data]               ; v0 a
+    fild    word [esi+value_data-row_data+edx*2+2]  ; v1*256 v0 a	    
+    fidiv   word [esi+c_256-row_data]               ; v1 v0 a    
     fsub    st0, st1    ; v1-v0 v0 a
     fmul    st0, st2    ; a*(v1-v0) v0 a
     faddp   st1         ; v0+a*(v1-v0) a

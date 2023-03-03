@@ -57,11 +57,12 @@ def main():
         starts += [curstart]
         curstart += len(k)
         rowtimes += [[(k[i+1][0] - k[i][0]) if i < len(k)-1 else 65535 for i, _ in enumerate(k)]]
-        def clamp(x): return min(max(int(x), 0), 255)
+        def tofixed(x): return min(max(round(x*256), -32768), 32767)
         for e in k:
-            if (c := clamp(e[1])) != e[1]:
-                print(f"Warning: keyframe value {e[1]} will be clamped to {c}")
-        values += [[clamp(e[1]) for e in k]]
+            f = e[1]*256
+            if f < -32768 or f > 32767:
+                print(f"Warning: keyframe value {e[1]} as 8.8 fixed point will be clamped to {f}")
+        values += [[tofixed(e[1]) for e in k]]
         types += [[e[2] for e in k]]
     for i in range(args.instruments):
         defines[f'ENV_{i}'] = str(len(defines))
@@ -80,7 +81,7 @@ def main():
                    ''.join('    dw ' + ','.join(str(v) for v in t) + '\n' for t in rowtimes) +
                    f'\n' +
                    f'value_data:\n' +
-                   ''.join('    db ' + ','.join(str(v) for v in t) + '\n' for t in values) +
+                   ''.join('    dw ' + ','.join(str(v) for v in t) + '\n' for t in values) +
                    f'\n' +
                    f'type_data:\n' +
                    ''.join('    db ' + ','.join(str(v) for v in t) + '\n' for t in types))
