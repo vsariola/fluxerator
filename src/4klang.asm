@@ -245,9 +245,6 @@ go4kENVMap:
 ; //	Output:		st0		:	result
 ; //----------------------------------------------------------------------------------------
 export_func	Power@0	; // base				exp	
-	fld1
-	fadd	st0	
-	fyl2x				; // log2_base
 	fld1				; // 1					log2_base
 	fld		st1			; // log2_base			1					log2_base
 	fprem				; // (frac)log2_base	1					log2_base
@@ -1367,7 +1364,6 @@ go4kUpdateInstrument_newNote:
 %if MAX_VOICES > 1	
 	popad
 %endif
-	jmp		short go4kUpdateInstrument_done
 go4kUpdateInstrument_done:
 	ret
 
