@@ -77,6 +77,18 @@ vec2 map (in vec3 p) {
         res = vec2(db,0.);
     }
 
+    e = s;
+    e.xy *= r2(p.z+syncs[ROW]/16.);
+    pModPolar(e.xy,3.);
+    e.z = mod(e.z,10.)-5.;
+    float dw = sdBox(e-vec3(1.5,0,0),vec3(0,2.,0));
+    if (dw < res.x ) {
+        res = vec2(dw,0.);
+    }
+    glow += .00005/(.000003+dw*dw)*vec3(.4,1,.3);
+
+
+
     pModPolar(s.xy,20.);
     s.z = mod(s.z,1.)-.5;
 
