@@ -39,6 +39,12 @@ float pModPolar(inout vec2 p, float repetitions) {
     return c;
 }
 
+float sdBox( vec3 p, vec3 b )
+{
+  vec3 q = abs(p) - b;
+  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
 float sdSphere( vec3 p, float s )
 {
   return length(p)-s;
@@ -51,34 +57,35 @@ vec3 hsv2rgb( in vec3 c ) {
 
 vec2 map (in vec3 p) {
 
-    vec2 res = vec2(100.,-1.);
-    float msize = 7.25;
+    vec2 res = vec2(100.,0.);
 
-    // set path(s) vector(s)
-    vec2 tun = p.xy - path(p.z);
-    vec3 q = vec3(tun,p.z);
+    vec3 s = vec3(p.xy - path(p.z),p.z);
 
-    vec3 e = mod(q ,5.)-2.5;
-    res = vec2(sdSphere(e,2.+syncs[ENV_0]*.2),.5);
+    vec3 c = s;
+    c.xy *= r2(PI/4.);
 
+    vec3 o = mod(c,10.)-5.;
 
 
-    vec3 s = q;
+    float dbox = sdBox(o,vec3(4,4,1.));
+    res = vec2(dbox,0.);
 
 
-    pModPolar(s.xy,20.);
-
-    vec3 r =s;
-    vec3 fs=s-vec3(2.85,0,0);
-    r = vec3(r.x,r.y,mod(r.z,1.)-.5);
-
-    float d4 = sdSphere(r-vec3(2.5,0,0),0.01);
-    if(d4<res.x ) {
-        res = vec2(d4,1.);
-        glowp=p;
+    vec3 e = mod(s ,5.)-2.5;
+    float db = sdSphere(e,2.+syncs[ENV_0]*.2);
+    if (db < res.x ) {
+        res = vec2(db,0.);
     }
 
-    glow += .0001/(.000003+d4*d4)*hsv2rgb(vec3(p.z*.0025,.4,.6));
+    pModPolar(s.xy,20.);
+    s.z = mod(s.z,1.)-.5;
+
+    float dg = sdSphere(s-vec3(2.5,0,0),0.01);
+    if (dg < res.x ) {
+        res = vec2(dg,0.);
+    }
+
+    glow += .0001/(.000003+dg*dg)*hsv2rgb(vec3(p.z*.0025,.4,.6));
 
     return res;
 }
@@ -113,7 +120,7 @@ vec4 image(vec2 f) {
 
         vec2 t = march(ro,rd);
 
-        vec3 col = t.y*0. + abs(glow*.65);
+        vec3 col = 0.*t.y + abs(glow*.65);
 
         return vec4(pow(col, vec3(0.4545)),1.0);
     }
