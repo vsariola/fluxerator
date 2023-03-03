@@ -67,12 +67,12 @@ vec2 map (in vec3 p) {
     vec3 o = mod(c,10.)-5.;
 
 
-    float dbox = sdBox(o,vec3(4,4,1.));
+    float dbox = sdBox(o,vec3(4,4,1.)-syncs[MAP_CUBES]);
     res = vec2(dbox,0.);
 
 
     vec3 e = mod(s ,5.)-2.5;
-    float db = sdSphere(e,2.+syncs[ENV_0]*.2);
+    float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);
     if (db < res.x ) {
         res = vec2(db,0.);
     }
@@ -85,7 +85,7 @@ vec2 map (in vec3 p) {
     if (dw < res.x ) {
         res = vec2(dw,0.);
     }
-    glow += .00005/(.000003+dw*dw)*vec3(.4,1,.3);
+    glow += .00005/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);
 
 
 
@@ -97,7 +97,7 @@ vec2 map (in vec3 p) {
         res = vec2(dg,0.);
     }
 
-    glow += .0001/(.000003+dg*dg)*hsv2rgb(vec3(p.z*.0025,.4,.6));
+    glow += .0001/(.000003+dg*dg+syncs[LIGHTS])*hsv2rgb(vec3(p.z*.0025,.4,.6));
 
     return res;
 }
