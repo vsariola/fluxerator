@@ -2,13 +2,17 @@
 
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
-#define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
-
 layout(location = 0) uniform sampler2D sampler;
 layout(location = 1) uniform float syncs[NUM_SYNCS];
 
 out vec4 outcolor;
 const vec2 iResolution = vec2(@XRES@,@YRES@);
+
+// ----------------------------
+// when copying, copy from here
+// ----------------------------
+
+#define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
 
 const float PI = 3.14159265358;
 const float MINDIST = .0001;
@@ -92,6 +96,33 @@ vec2 march(vec3 ro, vec3 rd) {
     return vec2(d,m);
 }
 
+vec4 image(vec2 f) {
+    vec2 uv = vec2(2.*f-iResolution.xy)/iResolution.x;
+    if (abs(uv.y) < syncs[CLIP]) {
+        uv -= 2.*max(uv-vec2(syncs[MIRROR_X],syncs[MIRROR_Y]),0.);
+
+        // Calculate the normalized ray direction
+        vec3 rd = normalize(vec3(uv,1.5));
+
+        rd.xy *= r2(syncs[CAM_ROLL]);
+        rd.yz *= r2(syncs[CAM_PITCH]);
+        rd.xz *= r2(syncs[CAM_YAW]);
+
+        float z = syncs[0];
+        vec3 ro = vec3(path(z),z);
+
+        vec2 t = march(ro,rd);
+
+        vec3 col = t.y*0. + abs(glow*.65);
+
+        return vec4(pow(col, vec3(0.4545)),1.0);
+    }
+}
+
+// -----------------------------
+// when copying, copy up to here
+// -----------------------------
+
 vec3 ca(sampler2D t, vec2 u){
 	const int n=10;
 	vec3 c=vec3(0);
@@ -107,33 +138,15 @@ vec3 ca(sampler2D t, vec2 u){
 	return c/n;
 }
 
+vec4 post(vec2 f) {
+    return vec4(ca(sampler,-1+2*f/iResolution),1);
+}
+
 void main()
 {
     if (syncs[ROW]<0) {
-	    outcolor = vec4(ca(sampler,-1+2*gl_FragCoord.xy/iResolution),1);
+	    outcolor = post(gl_FragCoord.xy);
     } else {
-        vec2 uv = vec2(2*gl_FragCoord.xy-iResolution.xy)/iResolution.x;
-        if (abs(uv.y) < syncs[CLIP]) {
-            uv -= 2*max(uv-vec2(syncs[MIRROR_X],syncs[MIRROR_Y]),0);
-
-            // Calculate the normalized ray direction
-            vec3 rd = normalize(vec3(uv,1.5));
-
-            rd.xy *= r2(syncs[CAM_ROLL]);
-            rd.yz *= r2(syncs[CAM_PITCH]);
-            rd.xz *= r2(syncs[CAM_YAW]);
-
-            // When pasting from ShaderToy, paste starting from here
-            // -----------------------------------------------------
-
-            float z = syncs[0];
-            vec3 ro = vec3(path(z),z);
-
-            vec2 t = march(ro,rd);
-
-            vec3 col = t.y*0 + abs(glow*.65);
-
-            outcolor = vec4(pow(col, vec3(0.4545)),1.0);
-        }
+        outcolor = image(gl_FragCoord.xy);
     }
 }
