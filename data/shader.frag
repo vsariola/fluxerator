@@ -1,11 +1,11 @@
-#version 330
+#version 430
 
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
 #define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
 
-uniform float syncs[NUM_SYNCS];
-uniform sampler2D sampler;
+layout(location = 0) uniform sampler2D sampler;
+layout(location = 1) uniform float syncs[NUM_SYNCS];
 
 out vec4 outcolor;
 const vec2 iResolution = vec2(@XRES@,@YRES@);
@@ -87,9 +87,9 @@ vec3 ca(sampler2D t, vec2 u){
 	vec3 c=vec3(0);
 	float rf=1,gf=1,bf=1;
 	for(int i=0;i<n;++i){
-		c.r+=texture2D(t,.5+.5*(u*rf)).r;
-		c.g+=texture2D(t,.5+.5*(u*gf)).g;
-		c.b+=texture2D(t,.5+.5*(u*bf)).b;
+		c.r+=texture(t,.5+.5*(u*rf)).r;
+		c.g+=texture(t,.5+.5*(u*gf)).g;
+		c.b+=texture(t,.5+.5*(u*bf)).b;
 		rf*=.9988;
 		gf*=.9982;
         bf*=.996;
