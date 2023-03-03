@@ -35,31 +35,42 @@ float pModPolar(inout vec2 p, float repetitions) {
     return c;
 }
 
+float sdSphere( vec3 p, float s )
+{
+  return length(p)-s;
+}
+
+
 vec2 map (in vec3 p) {
   
     vec2 res = vec2(100.,-1.);
     float msize = 7.25;
-    
+
     // set path(s) vector(s)
     vec2 tun = p.xy - path(p.z);
     vec3 q = vec3(tun,p.z);
-    vec3 o = vec3(tun+vec2(0.,.0),p.z+4.25);
+
+    vec3 e = mod(q ,5.)-2.5;
+    res = vec2(sdSphere(e,2.+syncs[ENV_0]*.2),.5);
+    
+      
    
     vec3 s = q;
 
+    
     pModPolar(s.xy,20.);    
     
     vec3 r =s;
     vec3 fs=s-vec3(2.85,0,0);
-    r = vec3(r.x,r.y,r.z);
+    r = vec3(r.x,r.y,mod(r.z,1.)-.5);
         
-    float d4 = length(r.xy-vec2(2.5,0.1))+.1+.2*sin(r.z) + syncs[ENV_0]*.1;
+    float d4 = sdSphere(r-vec3(2.5,0,0),0.01);
     if(d4<res.x ) {
         res = vec2(d4,1.);  
         glowp=p;
     }
    
-    glow += .001/(.000003+d4*d4);
+    glow += .0001/(.000003+d4*d4);
     
     return res;
 }
@@ -121,7 +132,7 @@ void main()
     
             vec2 t = march(ro,rd);
         
-            vec3 col = t.y*0 + abs(vec3(glow)*.65)*hsv2rgb(vec3(glowp.z*.0025,.8,.6));        
+            vec3 col = t.y*0 + abs(vec3(glow)*.65)*hsv2rgb(vec3(glowp.z*.0025,.4,.6));        
     
             outcolor = vec4(pow(col, vec3(0.4545)),1.0);    
         }
