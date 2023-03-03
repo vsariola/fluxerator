@@ -29,9 +29,9 @@ endif()
 # Generate the minified inlined shaders        
 
 set(SHADER_FRAG ../data/shader.frag)    
-set(SHADER_CONFIGURED_FRAG configured/shader.frag)    
+set(SHADER_CONFIGURED_FRAG shader_configured.frag)    
 set(SHADER_SYNC_FRAG shader_sync.frag)    
-set(SHADER_MINIFIED_INL minified/shader.inl)    
+set(SHADER_MINIFIED_INL shader.inl)    
 configure_file(
     ${SHADER_FRAG}
     ${SHADER_CONFIGURED_FRAG}
@@ -42,7 +42,7 @@ add_custom_command(
     DEPENDS ${SHADER_SYNC_FRAG}
 )    
 set(SHADERS ${SHADER_MINIFIED_INL})
-set(SHADER_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/minified/)    
+set(SHADER_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})    
 
 set(SYNCS_ROCKET ../data/syncs.rocket)    
 set(ROCKET_OUTPUT minirocket.h minirocket.inc ${SHADER_SYNC_FRAG} minirocket_tracknames.h)    
