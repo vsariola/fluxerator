@@ -15,13 +15,13 @@ const float MINDIST = .0001;
 const float MAXDIST = 125.;
 const int MAXSTEP = 160;
 
-float glow = 0.;
+vec3 glow;
 vec3 glowp = vec3(0);
 
-vec2 path(in float z) { 
-    vec2 p1 = vec2(2.35*sin(z * .125)+2.38*cos(z * .25), 3.5*cos(z * .0945));
-    vec2 p2 = vec2(3.2*sin(z * .19), 4.31*sin(z * .125) - 2.38*cos(z * .115));
-    return (p1 - p2)*.3;
+vec2 path(in float z) {
+    vec2 p =sin(vec2(z/7.,z/9.));
+    p = sin(vec2(z/11.,z/5.)+p*2.);
+    return p;
 }
 
 float pModPolar(inout vec2 p, float repetitions) {
@@ -40,9 +40,13 @@ float sdSphere( vec3 p, float s )
   return length(p)-s;
 }
 
+vec3 hsv2rgb( in vec3 c ) {
+    vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
+    return c.z * mix( vec3(1.0), rgb, c.y);
+}
 
 vec2 map (in vec3 p) {
-  
+
     vec2 res = vec2(100.,-1.);
     float msize = 7.25;
 
@@ -52,26 +56,26 @@ vec2 map (in vec3 p) {
 
     vec3 e = mod(q ,5.)-2.5;
     res = vec2(sdSphere(e,2.+syncs[ENV_0]*.2),.5);
-    
-      
-   
+
+
+
     vec3 s = q;
 
-    
-    pModPolar(s.xy,20.);    
-    
+
+    pModPolar(s.xy,20.);
+
     vec3 r =s;
     vec3 fs=s-vec3(2.85,0,0);
     r = vec3(r.x,r.y,mod(r.z,1.)-.5);
-        
+
     float d4 = sdSphere(r-vec3(2.5,0,0),0.01);
     if(d4<res.x ) {
-        res = vec2(d4,1.);  
+        res = vec2(d4,1.);
         glowp=p;
     }
-   
-    glow += .0001/(.000003+d4*d4);
-    
+
+    glow += .0001/(.000003+d4*d4)*hsv2rgb(vec3(p.z*.0025,.4,.6));
+
     return res;
 }
 
@@ -86,11 +90,6 @@ vec2 march(vec3 ro, vec3 rd) {
         m  = t.y;
     }
     return vec2(d,m);
-}
-
-vec3 hsv2rgb( in vec3 c ) {
-    vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
-    return c.z * mix( vec3(1.0), rgb, c.y);
 }
 
 vec3 ca(sampler2D t, vec2 u){
@@ -109,8 +108,8 @@ vec3 ca(sampler2D t, vec2 u){
 }
 
 void main()
-{    
-    if (syncs[ROW]<0) {    
+{
+    if (syncs[ROW]<0) {
 	    outcolor = vec4(ca(sampler,-1+2*gl_FragCoord.xy/iResolution),1);
     } else {
         vec2 uv = vec2(2*gl_FragCoord.xy-iResolution.xy)/iResolution.x;
@@ -126,15 +125,15 @@ void main()
 
             // When pasting from ShaderToy, paste starting from here
             // -----------------------------------------------------
-    
+
             float z = syncs[0];
-            vec3 ro = vec3(path(z),z); 
-    
+            vec3 ro = vec3(path(z),z);
+
             vec2 t = march(ro,rd);
-        
-            vec3 col = t.y*0 + abs(vec3(glow)*.65)*hsv2rgb(vec3(glowp.z*.0025,.4,.6));        
-    
-            outcolor = vec4(pow(col, vec3(0.4545)),1.0);    
+
+            vec3 col = t.y*0 + abs(glow*.65);
+
+            outcolor = vec4(pow(col, vec3(0.4545)),1.0);
         }
     }
 }
