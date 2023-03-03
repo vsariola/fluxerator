@@ -81,7 +81,7 @@ vec2 map (in vec3 p) {
     e.xy *= r2(p.z+syncs[ROW]/16.);
     pModPolar(e.xy,3.);
     e.z = mod(e.z,10.)-5.;
-    float dw = length(e.xz-vec2(1.5));
+    float dw = length(e.xz-vec2(1.5))+.4-syncs[ENV_0]*.45;
     if (dw < res.x ) {
         res = vec2(dw,0.);
     }
@@ -92,7 +92,7 @@ vec2 map (in vec3 p) {
     pModPolar(s.xy,20.);
     s.z = mod(s.z,1.)-.5;
 
-    float dg = sdSphere(s-vec3(2.5,0,0),0.01);
+    float dg = sdSphere(s-vec3(2.5,0,0),0.01)+.4-syncs[ENV_2]*.45;
     if (dg < res.x ) {
         res = vec2(dg,0.);
     }
