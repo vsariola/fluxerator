@@ -2,6 +2,10 @@
 
 ## Prerequisites for building
 
+Rocket is included as a submodule in the repo, so you should clone it
+with e.g.
+`git clone --depth=1 --recursive https://github.com/vsariola/unnamed8k`
+
 Following tools should be in path:
 
 1. [nasm](https://www.nasm.us/)
