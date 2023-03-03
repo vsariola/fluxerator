@@ -212,11 +212,22 @@ void entrypoint(void)
 			syncs[1 + NUM_TRACKS + MAX_INSTRUMENTS + i] = _4klang_envelope_buffer[synctime + i];
 		}
 
-		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(0, NUM_SYNCS, syncs);
+		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(1, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
 
 		glRects(-1, -1, 1, 1);
 		CHECK_ERRORS();
+
+		syncs[0] = -syncs[0];
+		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(1, NUM_SYNCS, syncs);
+
+		glBindTexture(GL_TEXTURE_2D, 1);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
+		((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"))(GL_TEXTURE0);
+		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidMain);
+		((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, 0);
+		glRects(-1, -1, 1, 1);
 
 		SwapBuffers(hDC);
 

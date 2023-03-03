@@ -5,6 +5,8 @@
 #define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
 
 uniform float syncs[NUM_SYNCS];
+uniform sampler2D sampler;
+
 out vec4 outcolor;
 const vec2 iResolution = vec2(@XRES@,@YRES@);
 
@@ -80,30 +82,48 @@ vec3 hsv2rgb( in vec3 c ) {
     return c.z * mix( vec3(1.0), rgb, c.y);
 }
 
+vec3 ca(sampler2D t, vec2 u){
+	const int n=10;
+	vec3 c=vec3(0);
+	float rf=1,gf=1,bf=1;
+	for(int i=0;i<n;++i){
+		c.r+=texture2D(t,.5+.5*(u*rf)).r;
+		c.g+=texture2D(t,.5+.5*(u*gf)).g;
+		c.b+=texture2D(t,.5+.5*(u*bf)).b;
+		rf*=.9988;
+		gf*=.9982;
+        bf*=.996;
+	}
+	return c/n;
+}
 
 void main()
 {    
-    vec2 uv = vec2(2*gl_FragCoord.xy-iResolution.xy)/iResolution.x;
-    if (abs(uv.y) < syncs[CLIP]) {
-        uv = abs(uv-vec2(syncs[MIRROR_X],syncs[MIRROR_Y]));
+    if (syncs[ROW]<0) {    
+	    outcolor = vec4(ca(sampler,-1+2*gl_FragCoord.xy/iResolution),1);
+    } else {
+        vec2 uv = vec2(2*gl_FragCoord.xy-iResolution.xy)/iResolution.x;
+        if (abs(uv.y) < syncs[CLIP]) {
+            uv -= 2*max(uv-vec2(syncs[MIRROR_X],syncs[MIRROR_Y]),0);
 
-        // Calculate the normalized ray direction
-        vec3 rd = normalize(vec3(uv,1.5));
+            // Calculate the normalized ray direction
+            vec3 rd = normalize(vec3(uv,1.5));
 
-        rd.xy *= r2(syncs[CAM_ROLL]);
-        rd.yz *= r2(syncs[CAM_PITCH]);
-        rd.xz *= r2(syncs[CAM_YAW]);
+            rd.xy *= r2(syncs[CAM_ROLL]);
+            rd.yz *= r2(syncs[CAM_PITCH]);
+            rd.xz *= r2(syncs[CAM_YAW]);
 
-        // When pasting from ShaderToy, paste starting from here
-        // -----------------------------------------------------
+            // When pasting from ShaderToy, paste starting from here
+            // -----------------------------------------------------
     
-        float z = syncs[0];
-        vec3 ro = vec3(path(z),z); 
+            float z = syncs[0];
+            vec3 ro = vec3(path(z),z); 
     
-        vec2 t = march(ro,rd);
+            vec2 t = march(ro,rd);
         
-        vec3 col = t.y*0 + abs(vec3(glow)*.65)*hsv2rgb(vec3(glowp.z*.0025,.8,.6));        
+            vec3 col = t.y*0 + abs(vec3(glow)*.65)*hsv2rgb(vec3(glowp.z*.0025,.8,.6));        
     
-        outcolor = vec4(pow(col, vec3(0.4545)),1.0);    
+            outcolor = vec4(pow(col, vec3(0.4545)),1.0);    
+        }
     }
 }
