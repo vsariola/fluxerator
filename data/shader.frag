@@ -3,7 +3,8 @@
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
 layout(location = 0) uniform sampler2D sampler;
-layout(location = 1) uniform float syncs[NUM_SYNCS];
+layout(location = 1, binding = 1) uniform sampler2D textSampler;
+layout(location = 2) uniform float syncs[NUM_SYNCS];
 
 out vec4 outcolor;
 const vec2 iResolution = vec2(@XRES@,@YRES@);
@@ -191,5 +192,6 @@ void main()
 	    outcolor = post(gl_FragCoord.xy);
     } else {
         outcolor = vec4(image(gl_FragCoord.xy),1.0);
-    }
+        outcolor.rgb += texture(textSampler,clamp((gl_FragCoord.xy/iResolution-vec2(0.7,-0.05))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+    }    
 }

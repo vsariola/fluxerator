@@ -96,6 +96,19 @@ void entrypoint(void)
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shader_sync_frag);
 	CHECK_ERRORS();
 	
+	SelectObject(hDC, CreateFont(260, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
+	wglUseFontBitmaps(hDC, 0, 256, 0);
+	glRasterPos2s(-1, 0);
+	static const char str[] = "chlumpie & pestis";
+	glCallLists(20, GL_UNSIGNED_BYTE, str);
+
+	PFNGLACTIVETEXTUREPROC glActiveTexture = ((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"));
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
+	glActiveTexture(GL_TEXTURE0);
+
 	buf->Play(0, 0, 0);
 
 	DWORD playStatus;
@@ -129,14 +142,14 @@ void entrypoint(void)
 		}
 
 		PFNGLUNIFORM1FVPROC glUniform1fvProc = ((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"));
-		glUniform1fvProc(1, NUM_SYNCS, syncs);
+		glUniform1fvProc(2, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
 	
 		glRects(-1, -1, 1, 1);
 		CHECK_ERRORS();
 
 		syncs[0] = -syncs[0];
-		glUniform1fvProc(1, NUM_SYNCS, syncs);
+		glUniform1fvProc(2, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
 
 		//TODO: do we need this? glBindTexture(GL_TEXTURE_2D, 1);		
