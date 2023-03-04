@@ -202,6 +202,6 @@ void main()
 	    outcolor = post(gl_FragCoord.xy);
     } else {
         outcolor = vec4(image(gl_FragCoord.xy),1.0);
-        outcolor.rgb += texture(textSampler,clamp((gl_FragCoord.xy/iResolution-vec2(0.7,-0.05))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+        outcolor.rgb += texture(textSampler,clamp((gl_FragCoord.xy/iResolution-vec2(0.45,0.39))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
     }    
 }

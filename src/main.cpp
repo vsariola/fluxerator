@@ -99,8 +99,8 @@ void entrypoint(void)
 	SelectObject(hDC, CreateFont(260, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
 	wglUseFontBitmaps(hDC, 0, 256, 0);
 	glRasterPos2s(-1, 0);
-	static const char str[] = "chlumpie & pestis";
-	glCallLists(20, GL_UNSIGNED_BYTE, str);
+	static const char str[] = "unnamed";
+	glCallLists(7, GL_UNSIGNED_BYTE, str);
 
 	PFNGLACTIVETEXTUREPROC glActiveTexture = ((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"));
 	glActiveTexture(GL_TEXTURE1);
