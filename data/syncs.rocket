@@ -95,7 +95,7 @@ color="ffa9b250">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="144" value="0.000000" interpolation="0" />
 		<key row="318" value="0.000000" interpolation="1" />
-		<key row="321" value="1.000000" interpolation="0" />
+		<key row="344" value="1.000000" interpolation="0" />
 	</track>
 	<track name="bars" folded="0" muteKeyCount="0" color="ff4fb292">
 		<key row="268" value="0.000000" interpolation="0" />
