@@ -23,6 +23,7 @@ vec3 glow;
 vec3 glowp = vec3(0);
 
 vec2 path(in float z) {
+    z/=1.5;
     vec2 p =sin(vec2(z/7.,z/9.));
     p = sin(vec2(z/11.,z/5.)+p*2.);
     return p;
@@ -127,7 +128,7 @@ vec4 image(vec2 f) {
         rd.yz *= r2(syncs[CAM_PITCH]);
         rd.xz *= r2(syncs[CAM_YAW]);
 
-        float z = syncs[0];
+        float z = syncs[0]*2;
         vec3 ro = vec3(path(z),z);
 
         vec2 t = march(ro,rd);
