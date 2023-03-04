@@ -87,45 +87,55 @@ vec3 map (in vec3 p) {
     vec3 s = vec3(p.xy - path(p.z),p.z);
 
     s = mix(s,abs(s),vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0));    
-
-    vec3 c = s;
-    c.xy *= r2(PI/4.);
-
-    vec3 o = mod(c,10.)-5.;
-
     
-    float flr = s.y + 1.;
-    dmin(res,flr,0.,.001);
+    if (syncs[EFFECT] == 0.) {
+        float flr = s.y + 1.;
+        dmin(res,flr,0.,.001);
 
-    vec3 q = rep3(s+2.,2.);
-    float dlattice = lattice(q)-.2;
-    dmin(res, dlattice,0.,0.);
+        vec3 q = rep3(s+2.,2.);
+        float dlattice = lattice(q)-.2;
+        dmin(res, dlattice,0.,0.);
 
-    float tube = 4.-length(s.xy);
-    dmin(res, tube,0.,0.);
+        float tube = 4.-length(s.xy);
+        dmin(res, tube,0.,0.);
 
-    vec3 e = mod(s ,5.)-2.5;
-    float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);    
-    
+        vec3 e = mod(s ,5.)-2.5;
+        float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);    
 
-    float index = floor(p.z/4.+.5);
-    float rotspeed = sin(index*3.)*2.;
 
-    e = s - vec3(4. * mod(index,2.)-2.,2.,-2.);       
-    e.xy *= r2(rotspeed*syncs[ROW]/16.);
-    pModPolar(e.xy,8.);
-    e.z = mod(e.z,4.)-2.;
-    
-    float dw = length(e.yz)+.4-syncs[ENV_0]*.45;
-    dmin(res, dw,1.,0.);    
-    glow += .00002/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);                     
+        float index = floor(p.z/4.+.5);
+        float rotspeed = sin(index*3.)*2.;
 
-    pModPolar(s.xy,18.);
-    s.z = mod(s.z,1.)-.5;
+        e = s - vec3(4. * mod(index,2.)-2.,2.,-2.);       
+        e.xy *= r2(rotspeed*syncs[ROW]/16.);
+        pModPolar(e.xy,8.);
+        e.z = mod(e.z,4.)-2.;
 
-    float dg = sdSphere(s-vec3(4,0,0),.1);
-    dmin(res, dg,0.,0.);
-    glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
+        float dw = length(e.yz)+.4-syncs[ENV_0]*.45;
+        dmin(res, dw,1.,0.);    
+        glow += .00002/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);                     
+
+        pModPolar(s.xy,18.);
+        s.z = mod(s.z,1.)-.5;
+
+        float dg = sdSphere(s-vec3(4,0,0),.1);
+        dmin(res, dg,0.,0.);
+        glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
+    } else {    
+        float z = syncs[0]*2.+4.+sin(syncs[ROW]*PI/8.);
+        vec3 o = vec3(p.xy - path(z),p.z-z);
+        o.xy *= r2(syncs[ROW]/7.);
+        o.yz *= r2(syncs[ROW]/9.);
+        
+        float dball = sdSphere(o,1.);    
+        dmin(res, dball,1.,0.);    
+        
+        vec3 s = abs(o);
+        float dw = length(s-(s.x+s.y+s.z)*vec3(1)/3.1)+.4-syncs[ENV_0]*.45;
+        dmin(res, dw,1.,0.);    
+        glow += .0002/(.0003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);     
+
+    }
     
     return res;
 }

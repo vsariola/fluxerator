@@ -76,5 +76,10 @@ color="ffa9b250">
 		<key row="0" value="1.000000" interpolation="0" />
 		<key row="16" value="0.000000" interpolation="0" />
 	</track>
+	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="80" value="1.000000" interpolation="0" />
+		<key row="144" value="0.000000" interpolation="0" />
+	</track>
 </tracks>
 	</rootElement>
