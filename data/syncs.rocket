@@ -74,11 +74,14 @@ color="ffb25091">
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
+		<key row="318" value="0.000000" interpolation="0" />
+		<key row="321" value="1.000000" interpolation="0" />
 	</track>
 	<track name="lights" folded="0" muteKeyCount="0" color="ffb28050">
 		<key row="0" value="1.000000" interpolation="0" />
 		<key row="204" value="1.000000" interpolation="2" />
 		<key row="208" value="0.000000" interpolation="0" />
+		<key row="268" value="0.000000" interpolation="1" />
 		<key row="272" value="-0.060000" interpolation="0" />
 		<key row="318" value="-0.060000" interpolation="1" />
 		<key row="321" value="0.000000" interpolation="0" />
@@ -91,7 +94,8 @@ color="ffa9b250">
 	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="144" value="0.000000" interpolation="0" />
-		<key row="268" value="1.000000" interpolation="0" />
+		<key row="318" value="0.000000" interpolation="1" />
+		<key row="321" value="1.000000" interpolation="0" />
 	</track>
 	<track name="bars" folded="0" muteKeyCount="0" color="ff4fb292">
 		<key row="268" value="0.000000" interpolation="0" />
