@@ -127,11 +127,12 @@ vec3 map (in vec3 p) {
         o.xy *= r2(syncs[ROW]/7.);
         o.yz *= r2(syncs[ROW]/9.);
         
-        float dball = sdSphere(o,1.);    
+        vec3 q = abs(abs(o)-vec3(.5));
+        float dball = sdSphere(q,.5);    
         dmin(res, dball,1.,0.);    
         
         vec3 s = abs(o);
-        float dw = length(s-(s.x+s.y+s.z)*vec3(1)/3.1)+.4-syncs[ENV_0]*.45;
+        float dw = length(s-(s.z+s.y+s.z)*vec3(1)/3.1)+.42-syncs[ENV_0]*.45;
         dmin(res, dw,1.,0.);    
         glow += .0002/(.0003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);     
 
