@@ -7,46 +7,48 @@ beatsPerMin="125">
 	<track name="cam#roll" folded="0" muteKeyCount="0"
 color="ffb27474">
 		<key row="0" value="0.000000" interpolation="2" />
-		<key row="16" value="0.000000" interpolation="1" />
-		<key row="66" value="-0.300000" interpolation="1" />
-		<key row="76" value="0.000000" interpolation="1" />
-		<key row="80" value="-6.000000" interpolation="0" />
-		<key row="208" value="-6.000000" interpolation="2" />
-		<key row="336" value="12.000000" interpolation="0" />
+		<key row="16" value="0.000000" interpolation="0" />
+		<key row="144" value="0.000000" interpolation="1" />
+		<key row="208" value="-6.290002" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
 color="ffb28050">
-		<key row="16" value="0.000000" interpolation="1" />
-		<key row="66" value="-0.000000" interpolation="0" />
+		<key row="0" value="0.000000" interpolation="1" />
+		<key row="16" value="0.000000" interpolation="0" />
+		<key row="63" value="0.000000" interpolation="2" />
+		<key row="66" value="0.400000" interpolation="0" />
+		<key row="127" value="0.400000" interpolation="1" />
+		<key row="130" value="0.000000" interpolation="0" />
+		<key row="144" value="0.000000" interpolation="0" />
+		<key row="268" value="0.000000" interpolation="1" />
+		<key row="272" value="0.400000" interpolation="0" />
 	</track>
 	<track name="cam#yaw" folded="0" muteKeyCount="0"
 color="ffa9b250">
-		<key row="0" value="0.000000" interpolation="1" />
-		<key row="66" value="0.160000" interpolation="0" />
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="63" value="0.000000" interpolation="2" />
+		<key row="66" value="0.800000" interpolation="0" />
+		<key row="127" value="0.800000" interpolation="1" />
+		<key row="130" value="0.000000" interpolation="0" />
+		<key row="144" value="0.000000" interpolation="1" />
 		<key row="191" value="0.000000" interpolation="1" />
 		<key row="194" value="3.140000" interpolation="0" />
 		<key row="268" value="3.140000" interpolation="1" />
-		<key row="272" value="0.340000" interpolation="0" />
+		<key row="272" value="0.000000" interpolation="0" />
 	</track>
 	<track name="mirror#x" folded="0" muteKeyCount="0"
 color="ff60b250">
-		<key row="0" value="1.000000" interpolation="0" />
-		<key row="63" value="1.000000" interpolation="1" />
-		<key row="66" value="0.000000" interpolation="0" />
-		<key row="127" value="0.000000" interpolation="1" />
-		<key row="130" value="1.000000" interpolation="0" />
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="76" value="0.000000" interpolation="1" />
+		<key row="80" value="1.000000" interpolation="0" />
 	</track>
 	<track name="mirror#y" folded="0" muteKeyCount="0"
 color="ff4fb292">
-		<key row="0" value="1.000000" interpolation="0" />
-		<key row="63" value="1.000000" interpolation="1" />
-		<key row="66" value="0.000000" interpolation="0" />
-		<key row="127" value="0.000000" interpolation="1" />
-		<key row="130" value="1.000000" interpolation="0" />
+		<key row="0" value="0.000000" interpolation="0" />
 	</track>
 	<track name="clip" folded="0" muteKeyCount="0" color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="1" />
-		<key row="32" value="0.400000" interpolation="0" />
+		<key row="32" value="1.000000" interpolation="0" />
 	</track>
 	<track name="map#spheres" folded="0" muteKeyCount="0"
 color="ff8850b2">
@@ -62,15 +64,12 @@ color="ffb25091">
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
-		<key row="268" value="-0.030000" interpolation="1" />
-		<key row="304" value="0.000000" interpolation="1" />
 	</track>
 	<track name="lights" folded="0" muteKeyCount="0" color="ffb28050">
 		<key row="0" value="1.000000" interpolation="0" />
 		<key row="204" value="1.000000" interpolation="2" />
 		<key row="208" value="0.000000" interpolation="0" />
-		<key row="268" value="-0.030000" interpolation="1" />
-		<key row="304" value="0.000000" interpolation="1" />
+		<key row="272" value="-0.060000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>

@@ -12,18 +12,50 @@ const vec2 iResolution = vec2(@XRES@,@YRES@);
 // when copying, copy from here
 // ----------------------------
 
-#define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
-
 const float PI = 3.14159265358;
 const float MINDIST = .0001;
 const float MAXDIST = 125.;
 const int MAXSTEP = 160;
 
+// globals
 vec3 glow;
-vec3 glowp = vec3(0);
+
+#define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
+
+// SDF-merge, with materials
+void dmin(inout vec3 d, float x, float y, float z)
+{
+	if( x < d.x ) d = vec3(x, y, z);
+}
+
+// 3D repetition
+vec3 rep3(vec3 p, float r)
+{
+    return mod(p+r,2.*r)-r;
+}
+
+float sdBox( vec3 p, vec3 b )
+{
+  vec3 q = abs(p) - b;
+  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
+float sdSphere( vec3 p, float s )
+{
+  return length(p)-s;
+}
+
+
+float lattice(vec3 p)
+{
+	p = abs(p);
+	p = max(p,p.yzx);
+	p = min(p,p.yzx);
+	p = min(p,p.yzx);
+	return p.x;
+}
 
 vec2 path(in float z) {
-    z/=1.5;
     vec2 p =sin(vec2(z/7.,z/9.));
     p = sin(vec2(z/11.,z/5.)+p*2.);
     return p;
@@ -40,102 +72,93 @@ float pModPolar(inout vec2 p, float repetitions) {
     return c;
 }
 
-float sdBox( vec3 p, vec3 b )
-{
-  vec3 q = abs(p) - b;
-  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-}
 
-float sdSphere( vec3 p, float s )
-{
-  return length(p)-s;
-}
 
 vec3 hsv2rgb( in vec3 c ) {
     vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
     return c.z * mix( vec3(1.0), rgb, c.y);
 }
 
-vec2 map (in vec3 p) {
+vec3 map (in vec3 p) {    
 
-    vec2 res = vec2(100.,0.);
+    vec3 res = vec3(100.,0.,1.);
 
     vec3 s = vec3(p.xy - path(p.z),p.z);
+
+    s = mix(s,abs(s),vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0));    
 
     vec3 c = s;
     c.xy *= r2(PI/4.);
 
     vec3 o = mod(c,10.)-5.;
 
+    
+    float flr = s.y + 1.;
+    dmin(res,flr,0.,.001);
 
-    float dbox = sdBox(o,vec3(4,4,1.)-syncs[MAP_CUBES]);
-    res = vec2(dbox,0.);
+    vec3 q = rep3(s+2.,2.);
+    float dlattice = lattice(q)-.2;
+    dmin(res, dlattice,0.,0.);
 
+    float tube = 4.-length(s.xy);
+    dmin(res, tube,0.,0.);
 
     vec3 e = mod(s ,5.)-2.5;
-    float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);
-    if (db < res.x ) {
-        res = vec2(db,0.);
-    }
+    float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);    
+    
 
-    e = s;
-    e.xy *= r2(p.z+syncs[ROW]/16.);
-    pModPolar(e.xy,3.);
-    e.z = mod(e.z,10.)-5.;
-    float dw = length(e.xz-vec2(1.5))+.4-syncs[ENV_0]*.45;
-    if (dw < res.x ) {
-        res = vec2(dw,0.);
-    }
-    glow += .00005/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);
+    float index = floor(p.z/4.+.5);
+    float rotspeed = sin(index*3.)*2.;
 
+    e = s - vec3(4. * mod(index,2.)-2.,2.,-2.);       
+    e.xy *= r2(rotspeed*syncs[ROW]/16.);
+    pModPolar(e.xy,8.);
+    e.z = mod(e.z,4.)-2.;
+    
+    float dw = length(e.yz)+.4-syncs[ENV_0]*.45;
+    dmin(res, dw,1.,0.);    
+    glow += .00002/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);                     
 
-
-    pModPolar(s.xy,20.);
+    pModPolar(s.xy,18.);
     s.z = mod(s.z,1.)-.5;
 
-    float dg = sdSphere(s-vec3(2.5,0,0),0.01)+.4-syncs[ENV_2]*.45;
-    if (dg < res.x ) {
-        res = vec2(dg,0.);
-    }
-
-    glow += .0001/(.000003+dg*dg+syncs[LIGHTS])*hsv2rgb(vec3(p.z*.0025,.4,.6));
-
+    float dg = sdSphere(s-vec3(4,0,0),.1);
+    dmin(res, dg,0.,0.);
+    glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
+    
     return res;
 }
 
-vec2 march(vec3 ro, vec3 rd) {
-    float d =  0.,m = -1.;
-    for(int i=0;i<MAXSTEP;i++) {
-        vec3 p = ro + rd * d;
-        vec2 t = map(p);
-        if (abs(t.x)<d*MINDIST || d>MAXDIST)
-            break;
-        d += t.x/3.;
-        m  = t.y;
-    }
-    return vec2(d,m);
-}
-
-vec4 image(vec2 f) {
-    vec2 uv = vec2(2.*f-iResolution.xy)/iResolution.x;
-    if (abs(uv.y) < syncs[CLIP]) {
-        uv -= 2.*max(uv-vec2(syncs[MIRROR_X],syncs[MIRROR_Y]),0.);
+vec3 image(in vec2 fragCoord) {
+    vec2 uv = vec2(2.*fragCoord-iResolution.xy)/iResolution.y;
+    vec3 col;
+    vec3 pos, pos2;
+    vec3 m,m2;
+    float t,t2;
+    vec3 normal;
+    vec2 e = vec2(0, .001);    
+    if (abs(uv.y) < syncs[CLIP]*.78) {        
 
         // Calculate the normalized ray direction
-        vec3 rd = normalize(vec3(uv,1.5));
+        vec3 rd = normalize(vec3(uv,1.8));
 
+        // Roll-pitch-yaw rotations
         rd.xy *= r2(syncs[CAM_ROLL]);
         rd.yz *= r2(syncs[CAM_PITCH]);
         rd.xz *= r2(syncs[CAM_YAW]);
-
-        float z = syncs[0]*2;
+        
+        // Camera origin
+        float z = syncs[0]*2.;
         vec3 ro = vec3(path(z),z);
-
-        vec2 t = march(ro,rd);
-
-        vec3 col = 0.*t.y + abs(glow*.65);
-
-        return vec4(pow(col, vec3(0.4545)),1.0);
+        
+        for(int i=0; i<MAXSTEP; i++) {
+            pos = ro + rd*t;
+            m = map(pos);            
+            t += m.x/3.;                      
+        }
+        col += glow;        
+                
+        return pow(col * (.2+ syncs[ENV_0]), vec3(0.4545));
     }
 }
 
@@ -167,6 +190,6 @@ void main()
     if (syncs[ROW]<0) {
 	    outcolor = post(gl_FragCoord.xy);
     } else {
-        outcolor = image(gl_FragCoord.xy);
+        outcolor = vec4(image(gl_FragCoord.xy),1.0);
     }
 }
