@@ -35,8 +35,8 @@ color="ffa9b250">
 		<key row="144" value="0.000000" interpolation="1" />
 		<key row="191" value="0.000000" interpolation="1" />
 		<key row="194" value="3.140000" interpolation="0" />
-		<key row="268" value="3.140000" interpolation="1" />
-		<key row="272" value="0.000000" interpolation="0" />
+		<key row="254" value="3.140000" interpolation="1" />
+		<key row="257" value="0.000000" interpolation="0" />
 	</track>
 	<track name="mirror#x" folded="0" muteKeyCount="0"
 color="ff60b250">
@@ -83,8 +83,8 @@ color="ffb25091">
 		<key row="208" value="0.000000" interpolation="0" />
 		<key row="268" value="0.000000" interpolation="1" />
 		<key row="272" value="-0.060000" interpolation="0" />
-		<key row="318" value="-0.060000" interpolation="1" />
-		<key row="321" value="0.000000" interpolation="0" />
+		<key row="340" value="-0.060000" interpolation="1" />
+		<key row="344" value="0.000000" interpolation="0" />
 	</track>
 	<track name="credits" folded="0" muteKeyCount="0"
 color="ffa9b250">
