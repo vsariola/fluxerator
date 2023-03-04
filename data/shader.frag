@@ -166,7 +166,9 @@ vec3 image(in vec2 fragCoord) {
         for(int i=0; i<MAXSTEP; i++) {
             pos = ro + rd*t;
             m = map(pos);            
-            t += m.x/3.;                      
+            t += m.x/3.;        
+            if (abs(m.x)<t*MINDIST || t>MAXDIST)
+                break;
         }
         col += glow;        
                 
