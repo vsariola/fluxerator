@@ -44,12 +44,12 @@ add_custom_command(
 set(SHADERS ${SHADER_MINIFIED_INL})
 set(SHADER_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})    
 
-set(SYNCS_ROCKET ../data/syncs.rocket)    
+set(SYNCS_ROCKET data/syncs.rocket)    
 set(ROCKET_OUTPUT minirocket.h minirocket.inc ${SHADER_SYNC_FRAG} minirocket_tracknames.h)    
 add_custom_command(
     OUTPUT ${ROCKET_OUTPUT}
-    COMMAND ${PYTHON} ${PROJECT_SOURCE_DIR}/data/convert.py -o ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/data/${SYNCS_ROCKET} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_CONFIGURED_FRAG} 14
-    DEPENDS ${SYNCS_ROCKET} ${SHADER_CONFIGURED_FRAG}
+    COMMAND ${PYTHON} ${PROJECT_SOURCE_DIR}/data/convert.py -o ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/${SYNCS_ROCKET} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_CONFIGURED_FRAG} 14
+    DEPENDS ${PROJECT_SOURCE_DIR}/${SYNCS_ROCKET} ${SHADER_CONFIGURED_FRAG}
 )    
 
 # intro
@@ -70,6 +70,7 @@ if (OPENGL_DEBUG)
 endif()
 
 add_executable(intro WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc")
+set_source_files_properties(minirocket.asm OBJECT_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/minirocket.inc)
 set_property(TARGET intro APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
 target_compile_definitions(intro PUBLIC XRES=${XRES} YRES=${YRES})
 target_link_libraries(intro opengl32.lib winmm.lib libucrt.lib dsound.lib)
