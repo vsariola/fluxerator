@@ -22,6 +22,8 @@ color="ffb28050">
 		<key row="144" value="0.000000" interpolation="0" />
 		<key row="268" value="0.000000" interpolation="1" />
 		<key row="272" value="0.400000" interpolation="0" />
+		<key row="318" value="0.400000" interpolation="1" />
+		<key row="321" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#yaw" folded="0" muteKeyCount="0"
 color="ffa9b250">
@@ -41,10 +43,14 @@ color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="76" value="0.000000" interpolation="1" />
 		<key row="80" value="1.000000" interpolation="0" />
+		<key row="191" value="1.000000" interpolation="1" />
+		<key row="194" value="0.000000" interpolation="0" />
 	</track>
 	<track name="mirror#y" folded="0" muteKeyCount="0"
 color="ff4fb292">
 		<key row="0" value="0.000000" interpolation="0" />
+		<key row="318" value="0.000000" interpolation="0" />
+		<key row="321" value="1.000000" interpolation="0" />
 	</track>
 	<track name="clip" folded="0" muteKeyCount="0" color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="1" />
@@ -70,6 +76,8 @@ color="ffb25091">
 		<key row="204" value="1.000000" interpolation="2" />
 		<key row="208" value="0.000000" interpolation="0" />
 		<key row="272" value="-0.060000" interpolation="0" />
+		<key row="318" value="-0.060000" interpolation="1" />
+		<key row="321" value="0.000000" interpolation="0" />
 	</track>
 	<track name="credits" folded="0" muteKeyCount="0"
 color="ffa9b250">
@@ -78,8 +86,12 @@ color="ffa9b250">
 	</track>
 	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />
-		<key row="80" value="1.000000" interpolation="0" />
 		<key row="144" value="0.000000" interpolation="0" />
+		<key row="268" value="1.000000" interpolation="0" />
+	</track>
+	<track name="bars" folded="0" muteKeyCount="0" color="ff4fb292">
+		<key row="268" value="0.000000" interpolation="0" />
+		<key row="272" value="1.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>
