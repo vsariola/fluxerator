@@ -2,7 +2,7 @@
 <rootElement>
 	<bookmark row="16" />
 	<bookmark row="80" />
-<tracks rows="10000" startRow="0" endRow="10000" rowsPerBeat="8"
+<tracks rows="10000" startRow="0" endRow="10000" rowsPerBeat="4"
 beatsPerMin="125">
 	<track name="cam#roll" folded="0" muteKeyCount="0"
 color="ffb27474">
@@ -25,6 +25,8 @@ color="ffa9b250">
 		<key row="66" value="0.160000" interpolation="0" />
 		<key row="191" value="0.000000" interpolation="1" />
 		<key row="194" value="3.140000" interpolation="0" />
+		<key row="268" value="3.140000" interpolation="1" />
+		<key row="272" value="0.340000" interpolation="0" />
 	</track>
 	<track name="mirror#x" folded="0" muteKeyCount="0"
 color="ff60b250">
@@ -60,11 +62,15 @@ color="ffb25091">
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
+		<key row="268" value="-0.030000" interpolation="1" />
+		<key row="304" value="0.000000" interpolation="1" />
 	</track>
 	<track name="lights" folded="0" muteKeyCount="0" color="ffb28050">
 		<key row="0" value="1.000000" interpolation="0" />
 		<key row="204" value="1.000000" interpolation="2" />
 		<key row="208" value="0.000000" interpolation="0" />
+		<key row="268" value="-0.030000" interpolation="1" />
+		<key row="304" value="0.000000" interpolation="1" />
 	</track>
 </tracks>
 	</rootElement>
