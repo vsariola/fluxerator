@@ -7,20 +7,22 @@ beatsPerMin="125">
 	<track name="cam#roll" folded="0" muteKeyCount="0"
 color="ffb27474">
 		<key row="0" value="0.000000" interpolation="2" />
-		<key row="16" value="0.000000" interpolation="0" />
+		<key row="16" value="0.000000" interpolation="1" />
+		<key row="66" value="-0.300000" interpolation="1" />
 		<key row="76" value="0.000000" interpolation="1" />
 		<key row="80" value="-6.000000" interpolation="0" />
 		<key row="208" value="-6.000000" interpolation="2" />
 		<key row="336" value="12.000000" interpolation="0" />
-		<key row="736" value="1.090000" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
 color="ffb28050">
-		<key row="16" value="0.000000" interpolation="0" />
+		<key row="16" value="0.000000" interpolation="1" />
+		<key row="66" value="-0.000000" interpolation="0" />
 	</track>
 	<track name="cam#yaw" folded="0" muteKeyCount="0"
 color="ffa9b250">
-		<key row="0" value="0.000000" interpolation="0" />
+		<key row="0" value="0.000000" interpolation="1" />
+		<key row="66" value="0.160000" interpolation="0" />
 		<key row="191" value="0.000000" interpolation="1" />
 		<key row="194" value="3.140000" interpolation="0" />
 	</track>
