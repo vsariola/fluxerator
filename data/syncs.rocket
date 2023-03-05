@@ -10,6 +10,8 @@ color="ffb27474">
 		<key row="64" value="0.000000" interpolation="0" />
 		<key row="192" value="0.000000" interpolation="1" />
 		<key row="256" value="-6.290002" interpolation="0" />
+		<key row="558" value="-6.290002" interpolation="1" />
+		<key row="561" value="-3.140005" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
 color="ffb28050">
@@ -105,6 +107,17 @@ color="ffa9b250">
 		<key row="433" value="-0.700000" interpolation="0" />
 		<key row="498" value="-0.700000" interpolation="1" />
 		<key row="501" value="0.000000" interpolation="0" />
+	</track>
+	<track name="WALLS" folded="0" muteKeyCount="0" color="ff4f71b2">
+		<key row="0" value="4.000000" interpolation="0" />
+		<key row="498" value="41.000000" interpolation="0" />
+		<key row="572" value="41.000000" interpolation="1" />
+		<key row="576" value="1.000000" interpolation="0" />
+	</track>
+	<track name="LANDSCAPE" folded="0" muteKeyCount="0"
+color="ff8850b2">
+		<key row="498" value="0.000000" interpolation="1" />
+		<key row="501" value="1.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>

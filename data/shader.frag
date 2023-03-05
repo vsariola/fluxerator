@@ -20,6 +20,7 @@ const int MAXSTEP = 160;
 
 // globals
 vec3 glow;
+vec3 ro;
 
 #define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
 
@@ -88,14 +89,21 @@ vec3 map (in vec3 p) {
 
     s = mix(s,abs(s),vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0));    
         
-    float flr = s.y + 1.;
+    float h=0.;
+    vec2 c=s.xz*3.;
+    for(int i = 0; i<4; i++){
+   	   h -= .125*abs(sin(c.x)+sin(c.y));       
+       c = mat2(0.8,-0.6,0.6, 0.8) * c;
+    }       
+        
+    float flr = s.y + 1. - h*syncs[LANDSCAPE];
     dmin(res,flr,0.,.001);
 
     vec3 q = rep3(s+2.,2.);
     float dlattice = lattice(q)-.2+syncs[BARS];
     dmin(res, dlattice,0.,0.);
 
-    float tube = 4.-length(s.xy);
+    float tube = syncs[WALLS]-length(s.xy);
     dmin(res, tube,0.,0.);
 
     vec3 e = mod(s ,5.)-2.5;
@@ -117,11 +125,11 @@ vec3 map (in vec3 p) {
     pModPolar(s.xy,18.);
     s.z = mod(s.z,1.)-.5;
 
-    float dg = sdSphere(s-vec3(4,0,0),.1);
+    float dg = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
     dmin(res, dg,0.,0.);
     glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
         
-    float z = syncs[0]*2.+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
+    float z = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
     vec3 o = vec3(p.xy - path(z),p.z-z);
     o.xy *= r2(syncs[ROW]/7.);
     o.yz *= r2(syncs[ROW]/9.);
@@ -157,8 +165,8 @@ vec3 image(in vec2 fragCoord) {
         rd.xz *= r2(syncs[CAM_YAW]);
         
         // Camera origin
-        float z = syncs[0]*2.;
-        vec3 ro = vec3(path(z),z);
+        float z = max(syncs[0],64.)*2.;
+        ro = vec3(path(z),z);
         
         for(int i=0; i<MAXSTEP; i++) {
             pos = ro + rd*t;
