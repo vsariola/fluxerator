@@ -98,6 +98,8 @@ color="ffb25091">
 		<key row="320" value="-0.060000" interpolation="0" />
 		<key row="388" value="-0.060000" interpolation="1" />
 		<key row="392" value="0.000000" interpolation="0" />
+		<key row="636" value="0.000000" interpolation="1" />
+		<key row="640" value="1.000000" interpolation="0" />
 	</track>
 	<track name="credits" folded="0" muteKeyCount="0"
 color="ffa9b250">
@@ -126,7 +128,7 @@ color="ffa9b250">
 		<key row="572" value="41.000000" interpolation="1" />
 		<key row="576" value="1.000000" interpolation="0" />
 		<key row="636" value="1.000000" interpolation="1" />
-		<key row="640" value="44.000000" interpolation="0" />
+		<key row="640" value="13.000000" interpolation="0" />
 	</track>
 	<track name="LANDSCAPE" folded="0" muteKeyCount="0"
 color="ff8850b2">
