@@ -22,13 +22,7 @@ const int MAXSTEP = 160;
 float glow;
 vec3 ro;
 
-#define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
-
-// SDF-merge, with materials
-void dmin(inout vec3 d, float x, float y, float z)
-{
-	if( x < d.x ) d = vec3(x, y, z);
-}
+#define r2(a)mat2(cos(a),sin(a),-sin(a),cos(a))
 
 // 3D repetition
 vec3 rep3(vec3 p, float r)
@@ -36,17 +30,10 @@ vec3 rep3(vec3 p, float r)
     return mod(p+r,2.*r)-r;
 }
 
-float sdBox( vec3 p, vec3 b )
-{
-  vec3 q = abs(p) - b;
-  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-}
-
 float sdSphere( vec3 p, float s )
 {
   return length(p)-s;
 }
-
 
 float lattice(vec3 p)
 {
@@ -63,27 +50,18 @@ vec2 path(in float z) {
     return p;
 }
 
-float pModPolar(inout vec2 p, float repetitions) {
+void pModPolar(inout vec2 p, float repetitions) {
     float angle = 2.*PI/repetitions;
     float a = atan(p.y, p.x) + angle/2.,
           r = length(p),
           c = floor(a/angle);
     a = mod(a,angle) - angle/2.;
-    p = vec2(cos(a), sin(a))*r;
-    if (abs(c) >= (repetitions/2.)) c = abs(c);
-    return c;
+    p = vec2(cos(a), sin(a))*r;    
 }
 
+float map (in vec3 p) {    
 
-
-vec3 hsv2rgb( in vec3 c ) {
-    vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
-    return c.z * mix( vec3(1.0), rgb, c.y);
-}
-
-vec3 map (in vec3 p) {    
-
-    vec3 res = vec3(100.,0.,1.);
+    float res = 100.;
 
     vec3 s = vec3(p.xy - path(p.z),p.z);
 
@@ -96,21 +74,20 @@ vec3 map (in vec3 p) {
        c *= mat2(0.8,-0.6,0.6, 0.8);
     }       
         
-    float flr = s.y + 1. - h*syncs[LANDSCAPE];
-    dmin(res,flr,0.,.001);
+    float flr = s.y + 1. - h*syncs[LANDSCAPE];    
+    res=min(res,flr);
 
     vec3 q = rep3(s+2.,2.);
     float dlattice = lattice(q);    
-    dmin(res, dlattice-.2+syncs[BARS],0.,0.);
+    res=min(res,dlattice-.2+syncs[BARS]);    
     glow += .0003/(.003+dlattice*dlattice)*syncs[LATTICEGLOW];                     
 
 
     float tube = syncs[WALLS]-length(s.xy);
-    dmin(res, tube,0.,0.);
+    res=min(res,tube);    
 
     vec3 e = mod(s ,5.)-2.5;
     float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);    
-
 
     float index = floor(p.z/4.+.5);
     float rotspeed = sin(index*3.)*2.;
@@ -121,14 +98,14 @@ vec3 map (in vec3 p) {
     e.z = mod(e.z,4.)-2.;
 
     float dw = length(e.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
-    dmin(res, dw,1.,0.);    
+    res=min(res,dw);    
     glow += .00002/(.000003+dw*dw+syncs[LASERS]);                     
 
     pModPolar(s.xy,18.);
     s.z = mod(s.z,1.)-.5;
 
     float dg = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
-    dmin(res, dg,0.,0.);
+    res=min(res,dg);    
     glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
         
     float z = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
@@ -138,11 +115,11 @@ vec3 map (in vec3 p) {
         
     q = abs(abs(o)-vec3(.25));
     float dball = sdSphere(q,.25);    
-    dmin(res, dball,1.,0.);    
+    res=min(res,dball);    
         
     s = abs(o);
     dw = length(s-(s.z+s.y+s.z)*vec3(1)/3.1)+.42-syncs[ENV_0]*.45;
-    dmin(res, dw,1.,0.);    
+    res=min(res,dw);    
     glow += .0002/(.0003+dw*dw);     
 
     return res;
@@ -152,7 +129,7 @@ vec3 image(in vec2 fragCoord) {
     vec2 uv = vec2(2.*fragCoord-iResolution.xy)/iResolution.y;
     vec3 col;
     vec3 pos, pos2;
-    vec3 m,m2;
+    float m;
     float t,t2;
     vec3 normal;
     vec2 e = vec2(0, .001);    
@@ -161,10 +138,9 @@ vec3 image(in vec2 fragCoord) {
     // Camera origin
     float z = max(syncs[0],64.)*2.;
 
+    col = texture(textSampler,clamp((fragCoord/iResolution-vec2(0.45,0.39))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+
     if (abs(uv.y) < syncs[CLIP]*.78) {        
-
-
-
         // Roll-pitch-yaw rotations
         rd.xy *= r2(syncs[CAM_ROLL]);
         rd.yz *= r2(syncs[CAM_PITCH]);
@@ -175,14 +151,13 @@ vec3 image(in vec2 fragCoord) {
         for(int i=0; i<MAXSTEP; i++) {
             pos = ro + rd*t;
             m = map(pos);            
-            t += m.x/3.;        
-            if (abs(m.x)<t*MINDIST || t>MAXDIST)
+            t += m/3.;        
+            if (abs(m)<t*MINDIST || t>MAXDIST)
                 break;
         }
-        col += glow*vec3(.4,1,.3);        
-                
-        return pow(col * (.2+ syncs[ENV_0]), vec3(0.4545));
+        col += pow(glow * vec3(.4,1,.3) * (.2+syncs[ENV_0]),vec3(0.4545));                                
     }
+    return col;
 }
 
 // -----------------------------
@@ -207,10 +182,5 @@ vec4 post(vec2 f) {
 
 void main()
 {
-    if (syncs[ROW]<0) {
-	    outcolor = post(gl_FragCoord.xy);
-    } else {
-        outcolor = vec4(image(gl_FragCoord.xy),1.0);
-        outcolor.rgb += texture(textSampler,clamp((gl_FragCoord.xy/iResolution-vec2(0.45,0.39))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
-    }    
+    outcolor = syncs[ROW]<0 ? post(gl_FragCoord.xy) : vec4(image(gl_FragCoord.xy),1.0);    
 }
