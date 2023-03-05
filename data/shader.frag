@@ -100,8 +100,10 @@ vec3 map (in vec3 p) {
     dmin(res,flr,0.,.001);
 
     vec3 q = rep3(s+2.,2.);
-    float dlattice = lattice(q)-.2+syncs[BARS];
-    dmin(res, dlattice,0.,0.);
+    float dlattice = lattice(q);    
+    dmin(res, dlattice-.2+syncs[BARS],0.,0.);
+    glow += .0003/(.003+dlattice*dlattice)*vec3(.4,1,.3)*syncs[LATTICEGLOW];                     
+
 
     float tube = syncs[WALLS]-length(s.xy);
     dmin(res, tube,0.,0.);
