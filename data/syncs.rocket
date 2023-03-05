@@ -74,18 +74,6 @@ color="ff4fb292">
 		<key row="2076" value="1.000000" interpolation="1" />
 		<key row="2112" value="0.000000" interpolation="0" />
 	</track>
-	<track name="map#spheres" folded="0" muteKeyCount="0"
-color="ff8850b2">
-		<key row="32" value="3.000000" interpolation="1" />
-		<key row="188" value="3.000000" interpolation="1" />
-		<key row="192" value="0.000000" interpolation="0" />
-	</track>
-	<track name="map#cubes" folded="0" muteKeyCount="0"
-color="ffb25091">
-		<key row="32" value="-0.300000" interpolation="0" />
-		<key row="188" value="-0.400000" interpolation="0" />
-		<key row="192" value="3.000000" interpolation="0" />
-	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="32" value="0.000000" interpolation="0" />
 		<key row="392" value="1.000000" interpolation="0" />

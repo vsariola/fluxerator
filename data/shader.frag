@@ -53,8 +53,7 @@ vec2 path(in float z) {
 void pModPolar(inout vec2 p, float repetitions) {
     float angle = 2.*PI/repetitions;
     float a = atan(p.y, p.x) + angle/2.,
-          r = length(p),
-          c = floor(a/angle);
+          r = length(p);          
     a = mod(a,angle) - angle/2.;
     p = vec2(cos(a), sin(a))*r;    
 }
@@ -87,7 +86,6 @@ float map (in vec3 p) {
     res=min(res,tube);    
 
     vec3 e = mod(s ,5.)-2.5;
-    float db = sdSphere(e,2.+syncs[ENV_0]*.2-syncs[MAP_SPHERES]);    
 
     float index = floor(p.z/4.+.5);
     float rotspeed = sin(index*3.)*2.;
