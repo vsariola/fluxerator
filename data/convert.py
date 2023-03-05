@@ -65,10 +65,8 @@ def main():
         values += [[tofixed(e[1]) for e in k]]
         types += [[e[2] for e in k]]
     for i in range(args.instruments):
-        defines[f'ENV_{i}'] = str(len(defines))
-    for i in range(args.instruments):
-        defines[f'NOTE_{i}'] = str(len(defines))
-    num_syncs = 1 + len(track) + args.instruments * 2
+        defines[f'ENV_{i}'] = str(len(defines))    
+    num_syncs = 1 + len(track) + args.instruments
 
     with open(outinc, 'w') as file:
         file.write(f'numtracks equ {len(track)}\n' +

@@ -221,8 +221,7 @@ void entrypoint(void)
 
 		for (int i = 0; i < MAX_INSTRUMENTS; i++) {
 			DWORD synctime = playCursor / (2 * sizeof(SAMPLE_TYPE) * 256) * 32;
-			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime + i];
-			syncs[1 + NUM_TRACKS + MAX_INSTRUMENTS + i] = _4klang_envelope_buffer[synctime + i];
+			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime + i];			
 		}
 
 		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(2, NUM_SYNCS, syncs);
