@@ -121,7 +121,7 @@ vec3 map (in vec3 p) {
     dmin(res, dg,0.,0.);
     glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
         
-    float z = syncs[0]*2.+4.+sin(syncs[ROW]*PI/8.)+100*(1-syncs[EFFECT]);
+    float z = syncs[0]*2.+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
     vec3 o = vec3(p.xy - path(z),p.z-z);
     o.xy *= r2(syncs[ROW]/7.);
     o.yz *= r2(syncs[ROW]/9.);
