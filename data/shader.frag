@@ -19,7 +19,7 @@ const float MAXDIST = 125.;
 const int MAXSTEP = 160;
 
 // globals
-vec3 glow;
+float glow;
 vec3 ro;
 
 #define r2(a) mat2(cos(a),sin(a),-sin(a),cos(a))
@@ -92,8 +92,8 @@ vec3 map (in vec3 p) {
     float h=0.;
     vec2 c=s.xz*3.;
     for(int i = 0; i<4; i++){
-   	   h -= .125*abs(sin(c.x)+sin(c.y));       
-       c = mat2(0.8,-0.6,0.6, 0.8) * c;
+   	   h -= .2*abs(sin(c.x));       
+       c *= mat2(0.8,-0.6,0.6, 0.8);
     }       
         
     float flr = s.y + 1. - h*syncs[LANDSCAPE];
@@ -102,7 +102,7 @@ vec3 map (in vec3 p) {
     vec3 q = rep3(s+2.,2.);
     float dlattice = lattice(q);    
     dmin(res, dlattice-.2+syncs[BARS],0.,0.);
-    glow += .0003/(.003+dlattice*dlattice)*vec3(.4,1,.3)*syncs[LATTICEGLOW];                     
+    glow += .0003/(.003+dlattice*dlattice)*syncs[LATTICEGLOW];                     
 
 
     float tube = syncs[WALLS]-length(s.xy);
@@ -122,14 +122,14 @@ vec3 map (in vec3 p) {
 
     float dw = length(e.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
     dmin(res, dw,1.,0.);    
-    glow += .00002/(.000003+dw*dw+syncs[LASERS])*vec3(.4,1,.3);                     
+    glow += .00002/(.000003+dw*dw+syncs[LASERS]);                     
 
     pModPolar(s.xy,18.);
     s.z = mod(s.z,1.)-.5;
 
     float dg = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
     dmin(res, dg,0.,0.);
-    glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*vec3(.4,.8,.5)*max(syncs[ENV_2]*5.-4.,0.);            
+    glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
         
     float z = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
     vec3 o = vec3(p.xy - path(z),p.z-z);
@@ -143,7 +143,7 @@ vec3 map (in vec3 p) {
     s = abs(o);
     dw = length(s-(s.z+s.y+s.z)*vec3(1)/3.1)+.42-syncs[ENV_0]*.45;
     dmin(res, dw,1.,0.);    
-    glow += .0002/(.0003+dw*dw)*vec3(.4,1,.3);     
+    glow += .0002/(.0003+dw*dw);     
 
     return res;
 }
@@ -156,18 +156,20 @@ vec3 image(in vec2 fragCoord) {
     float t,t2;
     vec3 normal;
     vec2 e = vec2(0, .001);    
+    // Calculate the normalized ray direction
+    vec3 rd = normalize(vec3(uv,1.8));
+    // Camera origin
+    float z = max(syncs[0],64.)*2.;
+
     if (abs(uv.y) < syncs[CLIP]*.78) {        
 
-        // Calculate the normalized ray direction
-        vec3 rd = normalize(vec3(uv,1.8));
+
 
         // Roll-pitch-yaw rotations
         rd.xy *= r2(syncs[CAM_ROLL]);
         rd.yz *= r2(syncs[CAM_PITCH]);
         rd.xz *= r2(syncs[CAM_YAW]);
         
-        // Camera origin
-        float z = max(syncs[0],64.)*2.;
         ro = vec3(path(z),z);
         
         for(int i=0; i<MAXSTEP; i++) {
@@ -177,7 +179,7 @@ vec3 image(in vec2 fragCoord) {
             if (abs(m.x)<t*MINDIST || t>MAXDIST)
                 break;
         }
-        col += glow;        
+        col += glow*vec3(.4,1,.3);        
                 
         return pow(col * (.2+ syncs[ENV_0]), vec3(0.4545));
     }
@@ -189,15 +191,12 @@ vec3 image(in vec2 fragCoord) {
 
 vec3 ca(sampler2D t, vec2 u){
 	const int n=10;
-	vec3 c=vec3(0);
-	float rf=1,gf=1,bf=1;
+	vec3 c,f = vec3(1);	
 	for(int i=0;i<n;++i){
-		c.r+=texture(t,.5+.5*(u*rf)).r;
-		c.g+=texture(t,.5+.5*(u*gf)).g;
-		c.b+=texture(t,.5+.5*(u*bf)).b;
-		rf*=.9988;
-		gf*=.9982;
-        bf*=.996;
+		c.r+=texture(t,.5+.5*(u*f.r)).r;
+		c.g+=texture(t,.5+.5*(u*f.g)).g;
+		c.b+=texture(t,.5+.5*(u*f.b)).b;
+        f*=vec3(.9988,.9982,.996);
 	}
 	return c/n;
 }
