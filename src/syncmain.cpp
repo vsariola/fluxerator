@@ -197,14 +197,23 @@ void entrypoint(void)
 	glCallLists(7, GL_UNSIGNED_BYTE, str);
 
 	glBindTexture(GL_TEXTURE_2D, 1);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
-	(((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture")))(GL_TEXTURE1);
+
+	buf->Play(0, 0, 0);
 
 	DWORD playStatus;
 
 	do
 	{
+		// First time this copies the font to texture unit 0 bound to texture 1
+		// Subsequent times this copies the screen to texture unit 1 bound to texture 0 for post processing		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
+		glRects(-1, -1, 1, 1);
+
+		SwapBuffers(hDC);
+
+		(((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture")))(GL_TEXTURE1);
+
 #if !(DESPERATE)
 		// do minimal message handling so windows doesn't kill your application
 		// not always strictly necessary but increases compatibility and reliability a lot
@@ -244,13 +253,6 @@ void entrypoint(void)
 
 		syncs[0] = -syncs[0];
 		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(2, NUM_SYNCS, syncs);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
-		glRects(-1, -1, 1, 1);
-
-		SwapBuffers(hDC);
-
 	} while (!GetAsyncKeyState(VK_ESCAPE));
 
 	ExitProcess(0);
