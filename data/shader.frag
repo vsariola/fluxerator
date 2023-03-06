@@ -82,7 +82,7 @@ float map (in vec3 p) {
     glow += .0003/(.003+h*h)*syncs[LATTICEGLOW];                     
 
 
-    h = syncs[WALLS]-length(s.xy);
+    h = syncs[TUNNEL_RADIUS]-length(s.xy);
     res=min(res,h);    
 
     vec3 e = mod(s ,5.)-2.5;
@@ -99,12 +99,12 @@ float map (in vec3 p) {
     res=min(res,h);    
     glow += .00002/(.000003+h*h+syncs[LASERS]);                     
 
-    pModPolar(s.xy,18.);
+    pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
     s.z = mod(s.z,1.)-.5;
 
-    h = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
+    h = sdSphere(s-vec3(syncs[TUNNEL_RADIUS],0,0),0.1);
     res=min(res,h);    
-    glow += .00002/(.000003+h*h+syncs[LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
+    glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
         
     h = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
     vec3 o = vec3(p.xy - path(h),p.z-h);

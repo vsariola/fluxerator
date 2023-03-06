@@ -9,7 +9,7 @@ color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="192" value="0.000000" interpolation="1" />
 		<key row="256" value="-6.290000" interpolation="0" />
-		<key row="433" value="-6.140000" interpolation="1" />
+		<key row="448" value="-6.290000" interpolation="1" />
 		<key row="561" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
@@ -21,10 +21,6 @@ color="ffb28050">
 		<key row="177" value="3.140000" interpolation="0" />
 		<key row="238" value="3.140000" interpolation="1" />
 		<key row="241" value="0.000000" interpolation="0" />
-		<key row="320" value="0.000000" interpolation="1" />
-		<key row="326" value="0.262174" interpolation="0" />
-		<key row="366" value="0.400000" interpolation="1" />
-		<key row="369" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#yaw" folded="0" muteKeyCount="0"
 color="ffa9b250">
@@ -67,17 +63,8 @@ color="ff4fb292">
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
-		<key row="454" value="1.000000" interpolation="0" />
-	</track>
-	<track name="lights" folded="0" muteKeyCount="0" color="ffb28050">
-		<key row="0" value="1.000000" interpolation="0" />
-		<key row="256" value="1.000000" interpolation="1" />
-		<key row="262" value="0.000000" interpolation="0" />
-		<key row="454" value="0.010000" interpolation="0" />
-		<key row="636" value="0.000000" interpolation="1" />
-		<key row="640" value="1.000000" interpolation="0" />
-		<key row="768" value="1.000000" interpolation="1" />
-		<key row="774" value="0.000000" interpolation="0" />
+		<key row="430" value="0.000000" interpolation="1" />
+		<key row="433" value="1.000000" interpolation="0" />
 	</track>
 	<track name="credits" folded="0" muteKeyCount="0"
 color="ffa9b250">
@@ -103,13 +90,32 @@ color="ffa9b250">
 		<key row="636" value="0.000000" interpolation="1" />
 		<key row="640" value="0.250000" interpolation="0" />
 	</track>
-	<track name="WALLS" folded="0" muteKeyCount="0" color="ff4f71b2">
+	<track name="tunnel#radius" folded="0" muteKeyCount="0"
+color="ff4f71b2">
 		<key row="0" value="4.000000" interpolation="0" />
 		<key row="454" value="41.000000" interpolation="0" />
 		<key row="622" value="41.000000" interpolation="1" />
 		<key row="625" value="9.999996" interpolation="0" />
 		<key row="768" value="13.000000" interpolation="1" />
 		<key row="774" value="1.000000" interpolation="0" />
+	</track>
+	<track name="tunnel#light_rep" folded="0" muteKeyCount="0"
+color="ff60b250">
+		<key row="0" value="18.000000" interpolation="0" />
+		<key row="366" value="18.000000" interpolation="1" />
+		<key row="369" value="127.000000" interpolation="0" />
+		<key row="582" value="18.000000" interpolation="0" />
+	</track>
+	<track name="tunnel#lights" folded="0" muteKeyCount="0"
+color="ffb28050">
+		<key row="0" value="1.000000" interpolation="0" />
+		<key row="256" value="1.000000" interpolation="1" />
+		<key row="262" value="0.000000" interpolation="0" />
+		<key row="454" value="0.010000" interpolation="0" />
+		<key row="636" value="0.000000" interpolation="1" />
+		<key row="640" value="1.000000" interpolation="0" />
+		<key row="768" value="1.000000" interpolation="1" />
+		<key row="774" value="0.000000" interpolation="0" />
 	</track>
 	<track name="LANDSCAPE" folded="0" muteKeyCount="0"
 color="ff8850b2">
