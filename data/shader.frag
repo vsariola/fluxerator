@@ -2,8 +2,8 @@
 
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
-layout(location = 0) uniform sampler2D sampler;
-layout(location = 1, binding = 1) uniform sampler2D textSampler;
+layout(location = 0) uniform sampler2D textSampler;
+layout(location = 1, binding = 1) uniform sampler2D sampler;
 layout(location = 2) uniform float syncs[NUM_SYNCS];
 
 out vec4 outcolor;

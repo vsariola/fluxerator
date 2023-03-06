@@ -1,5 +1,5 @@
 // minify windows.h
-#pragma warning( disable : 6031 6387)
+#pragma warning(disable : 6031 6387)
 #define WIN32_LEAN_AND_MEAN
 #define WIN32_EXTRA_LEAN
 #define VC_LEANMEAN
@@ -23,48 +23,53 @@
 
 #define sizeof_array(array) (int)(sizeof(array) / sizeof(array[0]))
 
-static struct sync_device* device;
+static struct sync_device *device;
 static struct sync_cb cb;
 
 static const PIXELFORMATDESCRIPTOR pfd = {
 	sizeof(pfd), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, PFD_TYPE_RGBA,
-	32, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
-};
+	32, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0};
 
 static DEVMODE screenSettings = {
-	{0}, 0, 0, sizeof(screenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT,
-	{0}, 0, 0, 0, 0, 0, {0}, 0, 0, XRES, YRES, 0, 0,
-	#if(WINVER >= 0x0400)
-		0, 0, 0, 0, 0, 0,
-			#if (WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)
-			0, 0
-		#endif
-	#endif
+	{0}, 0, 0, sizeof(screenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT, {0}, 0, 0, 0, 0, 0, {0}, 0, 0, XRES, YRES, 0, 0,
+#if (WINVER >= 0x0400)
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+#if (WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)
+	0,
+	0
+#endif
+#endif
 };
 
 static WAVEFORMATEX WaveFMT =
-{
+	{
 #ifdef FLOAT_32BIT
-	WAVE_FORMAT_IEEE_FLOAT,
+		WAVE_FORMAT_IEEE_FLOAT,
 #else
-	WAVE_FORMAT_PCM,
-#endif		
-	2,                                   // channels
-	SAMPLE_RATE,                         // samples per sec
-	SAMPLE_RATE * sizeof(SAMPLE_TYPE) * 2, // bytes per sec
-	sizeof(SAMPLE_TYPE) * 2,             // block alignment;
-	sizeof(SAMPLE_TYPE) * 8,             // bits per sample
-	0                                    // extension not needed
+		WAVE_FORMAT_PCM,
+#endif
+		2,									   // channels
+		SAMPLE_RATE,						   // samples per sec
+		SAMPLE_RATE * sizeof(SAMPLE_TYPE) * 2, // bytes per sec
+		sizeof(SAMPLE_TYPE) * 2,			   // block alignment;
+		sizeof(SAMPLE_TYPE) * 8,			   // bits per sample
+		0									   // extension not needed
 };
 
-static DSBUFFERDESC bufferDesc = { sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), NULL, &WaveFMT, NULL };
+static DSBUFFERDESC bufferDesc = {sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), NULL, &WaveFMT, NULL};
 
 // static allocation saves a few bytes
 static int pidMain;
 
 LPDIRECTSOUNDBUFFER buf;
 
-static void xpause(void* data, int flag) {
+static void xpause(void *data, int flag)
+{
 	(void)data;
 
 	if (flag)
@@ -75,7 +80,8 @@ static void xpause(void* data, int flag) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void xset_row(void* data, int row) {
+static void xset_row(void *data, int row)
+{
 	DWORD newpos = row * 2 * SAMPLES_PER_TICK * sizeof(SAMPLE_TYPE);
 	buf->SetCurrentPosition(newpos);
 	(void)data;
@@ -83,16 +89,19 @@ static void xset_row(void* data, int row) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static int xis_playing(void* data) {
+static int xis_playing(void *data)
+{
 	(void)data;
 	DWORD playStatus;
 	buf->GetStatus(&playStatus);
 	return playStatus & DSBSTATUS_PLAYING == DSBSTATUS_PLAYING;
 }
 
-int rocket_init(const char* prefix) {
+int rocket_init(const char *prefix)
+{
 	device = sync_create_device(prefix);
-	if (!device) {
+	if (!device)
+	{
 		printf("Unable to create rocketDevice\n");
 		return 0;
 	}
@@ -101,7 +110,8 @@ int rocket_init(const char* prefix) {
 	cb.pause = xpause;
 	cb.set_row = xset_row;
 
-	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT)) {
+	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT))
+	{
 		printf("Rocket failed to connect\n");
 		return 0;
 	}
@@ -111,7 +121,8 @@ int rocket_init(const char* prefix) {
 	return 1;
 }
 
-static int rocket_update() {
+static int rocket_update()
+{
 	DWORD playCursor;
 	buf->GetCurrentPosition(&playCursor, NULL);
 	int row = (int)(playCursor / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE)));
@@ -122,12 +133,13 @@ static int rocket_update() {
 	return 1;
 }
 
-static const struct sync_track* s_tracks[NUM_TRACKS];
+static const struct sync_track *s_tracks[NUM_TRACKS];
 
 void entrypoint(void)
 {
 	device = sync_create_device("localsync");
-	if (!device) {
+	if (!device)
+	{
 		printf("Unable to create rocketDevice\n");
 		return;
 	}
@@ -136,18 +148,18 @@ void entrypoint(void)
 	cb.pause = xpause;
 	cb.set_row = xset_row;
 
-	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT)) {
+	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT))
+	{
 		printf("Rocket failed to connect\n");
 		return;
 	}
 
 	printf("Rocket connected.\n");
 
-
 	for (int i = 0; i < sizeof_array(s_trackNames); ++i)
 		s_tracks[i] = sync_get_track(device, s_trackNames[i]);
 
-	// initialize window
+		// initialize window
 #ifdef WINDOW
 	HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
 	const HDC hDC = GetDC(window);
@@ -180,16 +192,14 @@ void entrypoint(void)
 
 	SelectObject(hDC, CreateFont(260, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
 	wglUseFontBitmaps(hDC, 0, 256, 0);
-	glRasterPos2s(-1, 0);	
+	glRasterPos2s(-1, 0);
 	static const char str[] = "unnamed";
 	glCallLists(7, GL_UNSIGNED_BYTE, str);
-	
-	PFNGLACTIVETEXTUREPROC glActiveTexture = ((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"));
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, 1);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	
+
+	glBindTexture(GL_TEXTURE_2D, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
-	glActiveTexture(GL_TEXTURE0);
+	(((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture")))(GL_TEXTURE1);
 
 	DWORD playStatus;
 
@@ -215,13 +225,15 @@ void entrypoint(void)
 		syncs[0] = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));
 
 		float row_f = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));
-		for (int i = 0; i < NUM_TRACKS; ++i) {
+		for (int i = 0; i < NUM_TRACKS; ++i)
+		{
 			syncs[i + 1] = sync_get_val(s_tracks[i], row_f);
 		}
 
-		for (int i = 0; i < MAX_INSTRUMENTS; i++) {
+		for (int i = 0; i < MAX_INSTRUMENTS; i++)
+		{
 			DWORD synctime = playCursor / (2 * sizeof(SAMPLE_TYPE) * 256) * 32;
-			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime + i];			
+			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime + i];
 		}
 
 		((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"))(2, NUM_SYNCS, syncs);
