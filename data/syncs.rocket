@@ -11,6 +11,8 @@ color="ffb27474">
 		<key row="256" value="-6.290000" interpolation="0" />
 		<key row="448" value="-6.290000" interpolation="1" />
 		<key row="561" value="0.000000" interpolation="0" />
+		<key row="896" value="0.000000" interpolation="1" />
+		<key row="960" value="6.290000" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
 color="ffb28050">
@@ -78,8 +80,8 @@ color="ffa9b250">
 		<key row="494" value="1.000000" interpolation="1" />
 		<key row="497" value="0.950000" interpolation="1" />
 		<key row="686" value="0.974545" interpolation="1" />
-		<key row="689" value="1.010000" interpolation="1" />
-		<key row="882" value="1.000000" interpolation="0" />
+		<key row="689" value="1.010000" interpolation="0" />
+		<key row="876" value="1.250311" interpolation="0" />
 	</track>
 	<track name="bars" folded="0" muteKeyCount="0" color="ff4fb292">
 		<key row="302" value="0.000000" interpolation="1" />
@@ -90,6 +92,10 @@ color="ffa9b250">
 		<key row="582" value="0.400000" interpolation="0" />
 		<key row="704" value="0.000000" interpolation="1" />
 		<key row="708" value="0.250000" interpolation="0" />
+		<key row="896" value="0.250000" interpolation="1" />
+		<key row="900" value="-1.060000" interpolation="0" />
+		<key row="960" value="-1.060000" interpolation="1" />
+		<key row="964" value="0.000000" interpolation="0" />
 	</track>
 	<track name="tunnel#radius" folded="0" muteKeyCount="0"
 color="ff4f71b2">
@@ -99,6 +105,8 @@ color="ff4f71b2">
 		<key row="625" value="9.000000" interpolation="1" />
 		<key row="832" value="13.000000" interpolation="1" />
 		<key row="836" value="1.000000" interpolation="0" />
+		<key row="960" value="1.000000" interpolation="1" />
+		<key row="964" value="4.000000" interpolation="0" />
 	</track>
 	<track name="tunnel#light_rep" folded="0" muteKeyCount="0"
 color="ff60b250">
@@ -108,6 +116,8 @@ color="ff60b250">
 		<key row="582" value="18.000000" interpolation="0" />
 		<key row="640" value="18.000000" interpolation="1" />
 		<key row="644" value="64.000000" interpolation="0" />
+		<key row="942" value="64.000000" interpolation="1" />
+		<key row="945" value="8.000000" interpolation="0" />
 	</track>
 	<track name="tunnel#lights" folded="0" muteKeyCount="0"
 color="ffb28050">
