@@ -73,17 +73,17 @@ float map (in vec3 p) {
        c *= mat2(0.8,-0.6,0.6, 0.8);
     }       
         
-    float flr = s.y + 1. - h*syncs[LANDSCAPE];    
-    res=min(res,flr);
+    h = s.y + 1. - h*syncs[LANDSCAPE];    
+    res=min(res,h);
 
     vec3 q = rep3(s+2.,2.);
-    float dlattice = lattice(q);    
-    res=min(res,dlattice-.2+syncs[BARS]);    
-    glow += .0003/(.003+dlattice*dlattice)*syncs[LATTICEGLOW];                     
+    h = lattice(q);    
+    res=min(res,h-.2+syncs[BARS]);    
+    glow += .0003/(.003+h*h)*syncs[LATTICEGLOW];                     
 
 
-    float tube = syncs[WALLS]-length(s.xy);
-    res=min(res,tube);    
+    h = syncs[WALLS]-length(s.xy);
+    res=min(res,h);    
 
     vec3 e = mod(s ,5.)-2.5;
 
@@ -95,36 +95,35 @@ float map (in vec3 p) {
     pModPolar(e.xy,8.);
     e.z = mod(e.z,4.)-2.;
 
-    float dw = length(e.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
-    res=min(res,dw);    
-    glow += .00002/(.000003+dw*dw+syncs[LASERS]);                     
+    h = length(e.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
+    res=min(res,h);    
+    glow += .00002/(.000003+h*h+syncs[LASERS]);                     
 
     pModPolar(s.xy,18.);
     s.z = mod(s.z,1.)-.5;
 
-    float dg = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
-    res=min(res,dg);    
-    glow += .00002/(.000003+dg*dg+syncs[LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
+    h = sdSphere(s-vec3(syncs[WALLS],0,0),.1);
+    res=min(res,h);    
+    glow += .00002/(.000003+h*h+syncs[LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
         
-    float z = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
-    vec3 o = vec3(p.xy - path(z),p.z-z);
+    h = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
+    vec3 o = vec3(p.xy - path(h),p.z-h);
     o.xy *= r2(syncs[ROW]/7.);
     o.yz *= r2(syncs[ROW]/9.);
         
     q = abs(abs(o)-vec3(.25));
-    float dball = sdSphere(q,.25);    
-    res=min(res,dball);    
+    h = sdSphere(q,.25);    
+    res=min(res,h);    
         
     s = abs(o);
-    dw = length(s-(s.z+s.y+s.z)*vec3(1)/3.1)+.42-syncs[ENV_0]*.45;
-    res=min(res,dw);    
-    glow += .0002/(.0003+dw*dw);     
+    h = length(s-(s.z+s.y+s.z)*vec3(1)/3.1)+.42-syncs[ENV_0]*.45;
+    res=min(res,h);    
+    glow += .0002/(.0003+h*h);     
 
     return res;
 }
 
-vec3 image(in vec2 fragCoord) {
-    vec2 uv = vec2(2.*fragCoord-iResolution.xy)/iResolution.y;
+vec3 image(vec2 uv) {    
     vec3 col;
     vec3 pos, pos2;
     float m;
@@ -134,9 +133,7 @@ vec3 image(in vec2 fragCoord) {
     // Calculate the normalized ray direction
     vec3 rd = normalize(vec3(uv,1.8));
     // Camera origin
-    float z = max(syncs[0],64.)*2.;
-
-    col = texture(textSampler,clamp((fragCoord/iResolution-vec2(0.45,0.39))/.2,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+    float z = max(syncs[0],64.)*2.;    
 
     if (abs(uv.y) < syncs[CLIP]*.78) {        
         // Roll-pitch-yaw rotations
@@ -162,23 +159,24 @@ vec3 image(in vec2 fragCoord) {
 // when copying, copy up to here
 // -----------------------------
 
-vec3 ca(sampler2D t, vec2 u){
-	const int n=10;
-	vec3 c,f = vec3(1);	
-	for(int i=0;i<n;++i){
-		c.r+=texture(t,.5+.5*(u*f.r)).r;
-		c.g+=texture(t,.5+.5*(u*f.g)).g;
-		c.b+=texture(t,.5+.5*(u*f.b)).b;
-        f*=vec3(.9988,.9982,.996);
-	}
-	return c/n;
-}
-
-vec4 post(vec2 f) {
-    return vec4(ca(sampler,-1+2*f/iResolution),1);
-}
-
 void main()
-{
-    outcolor = syncs[ROW]<0 ? post(gl_FragCoord.xy) : vec4(image(gl_FragCoord.xy),1.0);    
+{   
+    vec2 u = 2*gl_FragCoord.xy-iResolution;    
+    const int n=10;
+    vec3 c,f = vec3(1);	
+    if (syncs[ROW]<0) {        
+        u/=iResolution;                
+	    for(int i=0;i<n;++i){
+		    c.r+=texture(sampler,.5+.5*(u*f.r)).r;
+		    c.g+=texture(sampler,.5+.5*(u*f.g)).g;
+		    c.b+=texture(sampler,.5+.5*(u*f.b)).b;
+            f*=vec3(.9988,.9982,.996);
+	    }    
+        c /= n;
+        c += texture(textSampler,clamp((u+vec2(.13,.22))/.4,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+    } else {
+        u/=iResolution.y;                
+        c = image(u);        
+    }
+    outcolor = vec4(c,1);
 }
