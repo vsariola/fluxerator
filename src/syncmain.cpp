@@ -206,8 +206,9 @@ void entrypoint(void)
 	{
 		// First time this copies the font to texture unit 0 bound to texture 1
 		// Subsequent times this copies the screen to texture unit 1 bound to texture 0 for post processing		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, XRES, YRES, 0);
+		((PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap"))(GL_TEXTURE_2D);
 		glRects(-1, -1, 1, 1);
 
 		SwapBuffers(hDC);
