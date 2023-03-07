@@ -106,7 +106,7 @@ float map (in vec3 p) {
     res=min(res,h);    
     glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5.-4.,0.);            
         
-    h = ro.z+4.+sin(syncs[ROW]*PI/8.)+100.*(1.-syncs[EFFECT]);
+    h = ro.z+sin(syncs[ROW]*PI/8.)+syncs[EFFECT];
     vec3 o = vec3(p.xy - path(h),p.z-h);
     o.xy *= r2(syncs[ROW]/7.);
     o.yz *= r2(syncs[ROW]/9.);
