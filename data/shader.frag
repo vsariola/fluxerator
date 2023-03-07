@@ -78,8 +78,8 @@ float map (in vec3 p) {
 
     vec3 q = rep3(s+2.,2.);
     h = lattice(q);    
-    res=min(res,h-.2+syncs[BARS]);    
-    glow += .0003/(.003+h*h)*syncs[LATTICEGLOW];                     
+    res=min(res,h-.2+syncs[LATTICE_SIZE]);    
+    glow += .0003/(.003+h*h)*syncs[LATTICE_GLOW];                     
 
 
     h = syncs[TUNNEL_RADIUS]-length(s.xy);
@@ -135,7 +135,7 @@ vec3 image(vec2 uv) {
     // Camera origin
     float z = max(syncs[0],64.)*2.;    
 
-    if (abs(uv.y) < syncs[CLIP]*.78) {        
+    if (abs(uv.y) < syncs[SCREEN_CLIP]*.78) {        
         // Roll-pitch-yaw rotations
         rd.xy *= r2(syncs[CAM_ROLL]);
         rd.yz *= r2(syncs[CAM_PITCH]);
@@ -170,13 +170,13 @@ void main()
 		    c.r+=texture(sampler,.5+.5*(u*f.r)).r;
 		    c.g+=texture(sampler,.5+.5*(u*f.g)).g;
 		    c.b+=texture(sampler,.5+.5*(u*f.b)).b;
-            f*=vec3(.9988,.9982,.996);
-	    }    
-        c /= n;
+            f*=vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
+	    }            
+        c /= n;        
         c += texture(textSampler,clamp((u+vec2(.13,.22))/.4,vec2(0),vec2(1))).rgb * syncs[CREDITS];
     } else {
-        u/=iResolution.y;                
-        c = image(u);        
+        u/=iResolution.y;                        
+        c = image(u);                
     }
     outcolor = vec4(c,1);
 }

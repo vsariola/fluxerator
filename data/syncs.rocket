@@ -57,12 +57,23 @@ color="ff4fb292">
 		<key row="960" value="1.000000" interpolation="1" />
 		<key row="964" value="0.000000" interpolation="0" />
 	</track>
-	<track name="clip" folded="0" muteKeyCount="0" color="ff4f71b2">
+	<track name="screen#clip" folded="0" muteKeyCount="0"
+color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="32" value="0.000000" interpolation="1" />
 		<key row="80" value="1.000000" interpolation="0" />
 		<key row="2076" value="1.000000" interpolation="1" />
 		<key row="2112" value="0.000000" interpolation="0" />
+	</track>
+	<track name="screen#zoom" folded="0" muteKeyCount="0"
+color="ff8850b2">
+		<key row="0" value="1.000000" interpolation="0" />
+		<key row="558" value="1.000000" interpolation="1" />
+		<key row="560" value="1.100000" interpolation="1" />
+		<key row="561" value="1.000000" interpolation="0" />
+		<key row="772" value="1.000000" interpolation="1" />
+		<key row="896" value="0.990000" interpolation="1" />
+		<key row="960" value="1.000000" interpolation="0" />
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
@@ -87,7 +98,8 @@ color="ffa9b250">
 		<key row="814" value="2.750000" interpolation="1" />
 		<key row="817" value="-8.250000" interpolation="0" />
 	</track>
-	<track name="bars" folded="0" muteKeyCount="0" color="ff4fb292">
+	<track name="lattice#size" folded="0" muteKeyCount="0"
+color="ff4fb292">
 		<key row="302" value="0.000000" interpolation="1" />
 		<key row="305" value="1.000000" interpolation="0" />
 		<key row="448" value="1.000000" interpolation="1" />
@@ -100,6 +112,13 @@ color="ffa9b250">
 		<key row="900" value="-1.060000" interpolation="0" />
 		<key row="960" value="-1.060000" interpolation="1" />
 		<key row="964" value="0.000000" interpolation="0" />
+	</track>
+	<track name="lattice#glow" folded="0" muteKeyCount="0"
+color="ffb25091">
+		<key row="704" value="0.000000" interpolation="1" />
+		<key row="708" value="0.200000" interpolation="0" />
+		<key row="1006" value="0.200000" interpolation="1" />
+		<key row="1009" value="0.000000" interpolation="0" />
 	</track>
 	<track name="tunnel#radius" folded="0" muteKeyCount="0"
 color="ff4f71b2">
@@ -143,13 +162,6 @@ color="ff8850b2">
 		<key row="582" value="1.000000" interpolation="0" />
 		<key row="960" value="1.000000" interpolation="1" />
 		<key row="964" value="0.000000" interpolation="0" />
-	</track>
-	<track name="LATTICEGLOW" folded="0" muteKeyCount="0"
-color="ffb25091">
-		<key row="704" value="0.000000" interpolation="1" />
-		<key row="708" value="0.200000" interpolation="0" />
-		<key row="1006" value="0.200000" interpolation="1" />
-		<key row="1009" value="0.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>
