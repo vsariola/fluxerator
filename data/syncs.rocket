@@ -72,9 +72,9 @@ color="ff4f71b2">
 	<track name="screen#zoom" folded="0" muteKeyCount="0"
 color="ff8850b2">
 		<key row="0" value="1.000000" interpolation="0" />
-		<key row="558" value="1.000000" interpolation="1" />
-		<key row="560" value="1.200000" interpolation="1" />
-		<key row="561" value="1.000000" interpolation="0" />
+		<key row="448" value="1.000000" interpolation="1" />
+		<key row="576" value="0.970000" interpolation="1" />
+		<key row="580" value="1.000000" interpolation="0" />
 		<key row="772" value="1.000000" interpolation="1" />
 		<key row="896" value="0.990000" interpolation="1" />
 		<key row="960" value="1.000000" interpolation="0" />
@@ -111,7 +111,7 @@ color="ff4fb292">
 		<key row="448" value="1.000000" interpolation="1" />
 		<key row="454" value="-0.900000" interpolation="0" />
 		<key row="576" value="-0.900000" interpolation="1" />
-		<key row="582" value="0.400000" interpolation="0" />
+		<key row="580" value="0.400000" interpolation="0" />
 		<key row="704" value="0.000000" interpolation="1" />
 		<key row="708" value="0.250000" interpolation="0" />
 		<key row="896" value="0.250000" interpolation="1" />
@@ -168,6 +168,16 @@ color="ff8850b2">
 		<key row="582" value="1.000000" interpolation="0" />
 		<key row="960" value="1.000000" interpolation="1" />
 		<key row="964" value="0.000000" interpolation="0" />
+	</track>
+	<track name="path#x" folded="0" muteKeyCount="0" color="ffb27474">
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="192" value="0.000000" interpolation="1" />
+		<key row="324" value="1.000000" interpolation="0" />
+	</track>
+	<track name="path#y" folded="0" muteKeyCount="0" color="ffb28050">
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="192" value="0.000000" interpolation="1" />
+		<key row="324" value="1.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>

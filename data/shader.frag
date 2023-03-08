@@ -47,7 +47,7 @@ float lattice(vec3 p)
 vec2 path(in float z) {
     vec2 p =sin(vec2(z/7.,z/9.));
     p = sin(vec2(z/11.,z/5.)+p*2.);
-    return p;
+    return p*vec2(syncs[PATH_X],syncs[PATH_Y]);
 }
 
 void pModPolar(inout vec2 p, float repetitions) {
