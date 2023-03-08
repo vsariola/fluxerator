@@ -51,11 +51,15 @@ color="ff4fb292">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="174" value="0.000000" interpolation="1" />
 		<key row="177" value="1.000000" interpolation="0" />
+		<key row="238" value="1.000000" interpolation="1" />
+		<key row="241" value="-0.500000" interpolation="0" />
+		<key row="320" value="-0.500000" interpolation="1" />
+		<key row="324" value="0.000000" interpolation="0" />
 		<key row="454" value="0.000000" interpolation="0" />
 		<key row="768" value="0.000000" interpolation="1" />
 		<key row="772" value="1.000000" interpolation="0" />
 		<key row="960" value="1.000000" interpolation="1" />
-		<key row="964" value="0.000000" interpolation="0" />
+		<key row="964" value="-1.000000" interpolation="0" />
 	</track>
 	<track name="screen#clip" folded="0" muteKeyCount="0"
 color="ff4f71b2">
@@ -69,7 +73,7 @@ color="ff4f71b2">
 color="ff8850b2">
 		<key row="0" value="1.000000" interpolation="0" />
 		<key row="558" value="1.000000" interpolation="1" />
-		<key row="560" value="1.100000" interpolation="1" />
+		<key row="560" value="1.200000" interpolation="1" />
 		<key row="561" value="1.000000" interpolation="0" />
 		<key row="772" value="1.000000" interpolation="1" />
 		<key row="896" value="0.990000" interpolation="1" />
@@ -77,6 +81,8 @@ color="ff8850b2">
 	</track>
 	<track name="lasers" folded="0" muteKeyCount="0" color="ffb27474">
 		<key row="0" value="0.000000" interpolation="0" />
+		<key row="238" value="0.000000" interpolation="1" />
+		<key row="241" value="1.000000" interpolation="0" />
 		<key row="430" value="0.000000" interpolation="1" />
 		<key row="433" value="1.000000" interpolation="0" />
 		<key row="1006" value="1.000000" interpolation="1" />
@@ -88,8 +94,7 @@ color="ffa9b250">
 		<key row="64" value="0.000000" interpolation="0" />
 	</track>
 	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
-		<key row="0" value="64.000000" interpolation="0" />
-		<key row="371" value="64.000000" interpolation="1" />
+		<key row="371" value="50.000000" interpolation="1" />
 		<key row="388" value="4.000000" interpolation="0" />
 		<key row="494" value="4.000000" interpolation="1" />
 		<key row="497" value="8.000000" interpolation="0" />
@@ -100,6 +105,7 @@ color="ffa9b250">
 	</track>
 	<track name="lattice#size" folded="0" muteKeyCount="0"
 color="ff4fb292">
+		<key row="0" value="0.000000" interpolation="0" />
 		<key row="302" value="0.000000" interpolation="1" />
 		<key row="305" value="1.000000" interpolation="0" />
 		<key row="448" value="1.000000" interpolation="1" />
@@ -145,8 +151,8 @@ color="ff60b250">
 	<track name="tunnel#lights" folded="0" muteKeyCount="0"
 color="ffb28050">
 		<key row="0" value="1.000000" interpolation="0" />
-		<key row="256" value="1.000000" interpolation="1" />
-		<key row="262" value="0.000000" interpolation="0" />
+		<key row="238" value="1.000000" interpolation="1" />
+		<key row="241" value="0.000000" interpolation="0" />
 		<key row="454" value="0.010000" interpolation="0" />
 		<key row="704" value="0.000000" interpolation="1" />
 		<key row="708" value="1.000000" interpolation="0" />

@@ -62,9 +62,8 @@ float map (in vec3 p) {
 
     float res = 100.;
 
-    vec3 s = vec3(p.xy - path(p.z),p.z);
-
-    s = mix(s,abs(s),vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0));    
+    vec3 s=vec3(p.xy - path(p.z),p.z),a = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
+    s = (1-abs(a))*s + a*abs(s);
         
     float h=0.;
     vec2 c=s.xz*3.;
