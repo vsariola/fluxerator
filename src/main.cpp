@@ -16,8 +16,10 @@
 
 #include "glext.h"
 #include "4klang.h"
-#include <shader.inl>
 #include <minirocket.h>
+
+#pragma data_seg(".shader")
+#include <shader.inl>
 
 #pragma data_seg(".pixelfmt")
 static const PIXELFORMATDESCRIPTOR pfd = {
@@ -56,11 +58,15 @@ static WAVEFORMATEX WaveFMT =
 #pragma data_seg(".descfmt")
 static DSBUFFERDESC bufferDesc = { sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), NULL, &WaveFMT, NULL };
 
-#pragma data_seg(".pids")
+#pragma bss_seg(".pid")
 // static allocation saves a few bytes
 static int pidMain;
 
+#pragma data_seg(".timediv")
 static float TIME_DIVISOR = SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE);
+
+#pragma data_seg(".overtxt")
+static const char overtext[] = "unnamed";
 
 void entrypoint(void)
 {
@@ -98,9 +104,8 @@ void entrypoint(void)
 
 	SelectObject(hDC, CreateFont(260 * YRES / 1080, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
 	wglUseFontBitmaps(hDC, 0, 256, 0);
-	glRasterPos2s(-1, 0);
-	static const char str[] = "unnamed";
-	glCallLists(7, GL_UNSIGNED_BYTE, str);
+	glRasterPos2s(-1, 0);	
+	glCallLists(7, GL_UNSIGNED_BYTE, overtext);
 
 	glBindTexture(GL_TEXTURE_2D, 1);	
 
@@ -138,7 +143,7 @@ void entrypoint(void)
 
 		float syncs[NUM_SYNCS];
 		minirocket_sync(
-			(float)(long)(playCursor) / TIME_DIVISOR,
+			playCursor / TIME_DIVISOR,
 			syncs
 		);
 		for (int i = 0; i < MAX_INSTRUMENTS; i++) {
