@@ -140,8 +140,8 @@ void entrypoint(void)
 	device = sync_create_device("localsync");
 	if (!device)
 	{
-		printf("Unable to create rocketDevice\n");
-		return;
+		MessageBox(NULL, "Unable to create rocketDevice", NULL, 0x00000000L);
+		ExitProcess(0);		
 	}
 
 	cb.is_playing = xis_playing;
@@ -150,11 +150,9 @@ void entrypoint(void)
 
 	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT))
 	{
-		printf("Rocket failed to connect\n");
-		return;
-	}
-
-	printf("Rocket connected.\n");
+		MessageBox(NULL, "Rocket failed to connect, run Rocket server first", NULL, 0x00000000L);
+		ExitProcess(0);		
+	}	
 
 	for (int i = 0; i < sizeof_array(s_trackNames); ++i)
 		s_tracks[i] = sync_get_track(device, s_trackNames[i]);
