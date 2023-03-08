@@ -97,30 +97,6 @@ static int xis_playing(void *data)
 	return playStatus & DSBSTATUS_PLAYING == DSBSTATUS_PLAYING;
 }
 
-int rocket_init(const char *prefix)
-{
-	device = sync_create_device(prefix);
-	if (!device)
-	{
-		printf("Unable to create rocketDevice\n");
-		return 0;
-	}
-
-	cb.is_playing = xis_playing;
-	cb.pause = xpause;
-	cb.set_row = xset_row;
-
-	if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT))
-	{
-		printf("Rocket failed to connect\n");
-		return 0;
-	}
-
-	printf("Rocket connected.\n");
-
-	return 1;
-}
-
 static int rocket_update()
 {
 	DWORD playCursor;
@@ -197,8 +173,6 @@ void entrypoint(void)
 	glBindTexture(GL_TEXTURE_2D, 1);
 
 	buf->Play(0, 0, 0);
-
-	DWORD playStatus;
 
 	do
 	{
