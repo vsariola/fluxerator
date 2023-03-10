@@ -140,8 +140,8 @@ vec3 image(vec2 uv) {
         rd.yz *= r2(syncs[CAM_PITCH]);
         rd.xz *= r2(syncs[CAM_YAW]);
         
-        ro = vec3(path(z),z);
-        
+        ro = vec3(path(z)+vec2(syncs[CAM_X],syncs[CAM_Y]),z);
+
         for(int i=0; i<MAXSTEP; i++) {
             pos = ro + rd*t;
             m = map(pos);            
