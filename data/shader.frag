@@ -172,7 +172,13 @@ void main()
             f*=vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
 	    }            
         c /= n;        
-        c += texture(textSampler,clamp((u+vec2(.13,.22))/.4,vec2(0),vec2(1))).rgb * syncs[CREDITS];
+        c += texture(textSampler,            
+            clamp(
+                u+vec2(syncs[TEXT_WIDTH]/2.,.52),
+                vec2(0),
+                vec2(syncs[TEXT_WIDTH],1)
+            )+vec2(syncs[TEXT_START],0)            
+        ).rgb;
     } else {
         u/=iResolution.y;                        
         c = image(u);                

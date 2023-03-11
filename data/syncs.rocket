@@ -104,11 +104,6 @@ color="ff8850b2">
 		<key row="1006" value="1.000000" interpolation="1" />
 		<key row="1009" value="0.000000" interpolation="0" />
 	</track>
-	<track name="credits" folded="0" muteKeyCount="0"
-color="ffa9b250">
-		<key row="0" value="1.000000" interpolation="0" />
-		<key row="64" value="0.000000" interpolation="0" />
-	</track>
 	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="371" value="50.000000" interpolation="1" />
 		<key row="388" value="4.000000" interpolation="0" />
@@ -187,6 +182,24 @@ color="ff8850b2">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="192" value="0.000000" interpolation="1" />
 		<key row="324" value="1.000000" interpolation="0" />
+	</track>
+	<track name="text#start" folded="0" muteKeyCount="0"
+color="ff4fb292">
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="1216" value="0.230000" interpolation="0" />
+	</track>
+	<track name="text#width" folded="0" muteKeyCount="0"
+color="ff4f71b2">
+		<key row="0" value="0.230000" interpolation="0" />
+		<key row="64" value="0.000000" interpolation="0" />
+		<key row="1152" value="0.000000" interpolation="1" />
+		<key row="1156" value="0.230000" interpolation="0" />
+		<key row="1198" value="0.230000" interpolation="1" />
+		<key row="1201" value="0.000000" interpolation="0" />
+		<key row="1216" value="0.000000" interpolation="1" />
+		<key row="1220" value="0.770000" interpolation="0" />
+		<key row="1262" value="0.770000" interpolation="1" />
+		<key row="1265" value="0.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>
