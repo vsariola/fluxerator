@@ -1,4 +1,5 @@
 #version 430
+#define w(a)mat2(cos(a),sin(a),-sin(a),cos(a))
 
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
@@ -7,7 +8,7 @@ layout(location = 1, binding = 1) uniform sampler2D sampler;
 layout(location = 2) uniform float syncs[NUM_SYNCS];
 
 out vec3 outcolor;
-const vec2 iResolution = vec2(@XRES@,@YRES@);
+vec2 iResolution = vec2(@XRES@,@YRES@);
 
 // ----------------------------
 // when copying, copy from here
@@ -21,8 +22,6 @@ const int MAXSTEP = 160;
 // globals
 float glow;
 vec3 ro;
-
-#define r2(a)mat2(cos(a),sin(a),-sin(a),cos(a))
 
 // 3D repetition
 vec3 rep3(vec3 p, float r)
@@ -90,7 +89,7 @@ float map (in vec3 p) {
     float rotspeed = sin(index)*2.;
 
     e = s - vec3(4. * mod(index,2.)-2.,2.,-2.);       
-    e.xy *= r2(rotspeed*syncs[ROW]/16.);
+    e.xy *= w(rotspeed*syncs[ROW]/16.);
     pModPolar(e.xy,8.);
     e.z = mod(e.z,4.)-2.;
 
@@ -107,8 +106,8 @@ float map (in vec3 p) {
         
     h = ro.z+sin(syncs[ROW]*PI/8.)+syncs[EFFECT];
     vec3 o = vec3(p.xy - path(h),p.z-h);
-    o.xy *= r2(syncs[ROW]/7.);
-    o.yz *= r2(syncs[ROW]/9.);
+    o.xy *= w(syncs[ROW]/7.);
+    o.yz *= w(syncs[ROW]/9.);
         
     q = abs(abs(o)-vec3(.25));
     h = sdSphere(q,.25);    
@@ -136,9 +135,9 @@ vec3 image(vec2 uv) {
 
     if (abs(uv.y) < syncs[SCREEN_CLIP]*.78) {        
         // Roll-pitch-yaw rotations
-        rd.xy *= r2(syncs[CAM_ROLL]);
-        rd.yz *= r2(syncs[CAM_PITCH]);
-        rd.xz *= r2(syncs[CAM_YAW]);
+        rd.xy *= w(syncs[CAM_ROLL]);
+        rd.yz *= w(syncs[CAM_PITCH]);
+        rd.xz *= w(syncs[CAM_YAW]);
         
         ro = vec3(path(z)+vec2(syncs[CAM_X],syncs[CAM_Y]),z);
 
