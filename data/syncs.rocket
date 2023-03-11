@@ -185,12 +185,12 @@ color="ff8850b2">
 	</track>
 	<track name="text#start" folded="0" muteKeyCount="0"
 color="ff4fb292">
-		<key row="0" value="0.000000" interpolation="0" />
+		<key row="0" value="0.010000" interpolation="0" />
 		<key row="1216" value="0.360000" interpolation="0" />
 	</track>
 	<track name="text#width" folded="0" muteKeyCount="0"
 color="ff4f71b2">
-		<key row="0" value="0.360000" interpolation="0" />
+		<key row="0" value="0.350000" interpolation="0" />
 		<key row="64" value="0.000000" interpolation="0" />
 		<key row="1152" value="0.000000" interpolation="1" />
 		<key row="1156" value="0.360000" interpolation="0" />
