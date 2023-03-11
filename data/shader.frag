@@ -27,10 +27,10 @@ vec2 path(float z) {
     return sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*vec2(syncs[PATH_X],syncs[PATH_Y]);
 }
 
-void pModPolar(inout vec2 p, float repetitions) {
-    float angle = 2*PI/repetitions;
-    float a = mod(atan(p.y, p.x) + angle/2,angle)-angle/2;          
-    p = vec2(cos(a), sin(a))*length(p);    
+void pModPolar(inout vec2 p, float r) {
+    r = 2*PI/r;
+    r = mod(atan(p.y, p.x) + r/2,r)-r/2;          
+    p = vec2(cos(r), sin(r))*length(p);    
 }
 
 float map (vec3 p) {    
