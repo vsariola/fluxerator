@@ -87,7 +87,7 @@ float map (in vec3 p) {
     vec3 e = mod(s ,5.)-2.5;
 
     float index = floor(p.z/4.+.5);
-    float rotspeed = sin(index*3.)*2.;
+    float rotspeed = sin(index)*2.;
 
     e = s - vec3(4. * mod(index,2.)-2.,2.,-2.);       
     e.xy *= r2(rotspeed*syncs[ROW]/16.);
