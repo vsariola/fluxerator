@@ -168,7 +168,7 @@ void entrypoint(void)
 	CHECK_ERRORS();
 	glRasterPos2s(-1, 0);	
 	CHECK_ERRORS();
-	glCallLists(37, GL_UNSIGNED_BYTE, overtext);
+	glCallLists((sizeof(overtext) / sizeof(overtext[0]))-1, GL_UNSIGNED_BYTE, overtext);
 	CHECK_ERRORS();
 
 	glBindTexture(GL_TEXTURE_2D, 1);	
