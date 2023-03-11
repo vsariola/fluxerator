@@ -26,7 +26,14 @@ _minirocket_sync@8:
     inc     word [esi+ecx*2+track_data-row_data]    ; index++
     jmp     .syncloop
 .key:
-    call    interpolate
+    fidiv   word [esi+edx*2]    ; a=(t-t0)/d
+    movzx   eax, byte [esi+type_data-row_data+edx]
+.key_linear:
+    dec		eax
+	jz		.out
+    fldz            ; 0 a
+    fstp    st1     ; a
+.out:
     fild    word [esi+value_data-row_data+edx*2]    ; v0*256 a	    
     fidiv   word [esi+c_256-row_data]               ; v0 a
     fild    word [esi+value_data-row_data+edx*2+2]  ; v1*256 v0 a	    
@@ -45,34 +52,6 @@ _minirocket_sync@8:
     jl      .syncloop
     popad
     ret     8
-
-section		.rkinter        code    align=1
-interpolate:
-    fidiv   word [esi+edx*2]    ; a=(t-t0)/d
-    movzx   eax, byte [esi+type_data-row_data+edx]
-.key_linear:
-    dec		eax
-	jnz		.key_smooth
-    ret
-.key_smooth:
-    dec		eax
-	jnz		.key_ramp
-    fild    word [esi+c_three-row_data] ; 3 a
-    fsub    st0, st1                    ; 3-a a
-    fsub    st0, st1                    ; 3-2*a a
-    fmul    st0, st1                    ; a*(3-2*a) a
-    fmulp   st1                         ; a*a*(3-2*a)
-    ret
-.key_ramp:
-    dec		eax
-	jnz		.key_step
-    fld     st0     ; a a
-    fmulp   st1     ; a^2
-    ret
-.key_step:
-    fldz            ; 0 a
-    fstp    st1     ; a
-    ret
 
 section		.rtbss      bss		align=1
 start_times resd    numtracks    
