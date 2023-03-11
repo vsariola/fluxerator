@@ -203,8 +203,8 @@ void entrypoint(void)
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidMain);
 		CHECK_ERRORS();
 
-		DWORD playCursor;
-		buf->GetCurrentPosition(&playCursor, NULL);
+		long playCursor;
+		buf->GetCurrentPosition((DWORD*) & playCursor, NULL);
 
 		float syncs[NUM_SYNCS];
 #ifdef SYNC

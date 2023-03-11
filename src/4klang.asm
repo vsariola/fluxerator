@@ -73,7 +73,7 @@ section .data
 %endif
 
 ; // some synth constants
-go4k_synth_commands		dd	0
+go4k_synth_commands		equ $-4
 						dd	_go4kENV_func@0
 						dd	_go4kVCO_func@0					
 						dd	_go4kVCF_func@0
