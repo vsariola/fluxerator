@@ -6,7 +6,7 @@ layout(location = 0) uniform sampler2D textSampler;
 layout(location = 1, binding = 1) uniform sampler2D sampler;
 layout(location = 2) uniform float syncs[NUM_SYNCS];
 
-out vec4 outcolor;
+out vec3 outcolor;
 const vec2 iResolution = vec2(@XRES@,@YRES@);
 
 // ----------------------------
@@ -162,17 +162,17 @@ void main()
 {   
     vec2 u = 2*gl_FragCoord.xy-iResolution;    
     const int n=10;
-    vec3 c,f = vec3(1);	
+    vec3 f = vec3(1);	
     if (syncs[ROW]<0) {        
         u/=iResolution;                
 	    for(int i=0;i<n;++i){
-		    c.r+=texture(sampler,.5+.5*(u*f.r)).r;
-		    c.g+=texture(sampler,.5+.5*(u*f.g)).g;
-		    c.b+=texture(sampler,.5+.5*(u*f.b)).b;
+		    outcolor.r+=texture(sampler,.5+.5*(u*f.r)).r;
+		    outcolor.g+=texture(sampler,.5+.5*(u*f.g)).g;
+		    outcolor.b+=texture(sampler,.5+.5*(u*f.b)).b;
             f*=vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
 	    }            
-        c /= n;        
-        c += texture(textSampler,            
+        outcolor /= n;        
+        outcolor += texture(textSampler,            
             clamp(
                 u+vec2(syncs[TEXT_WIDTH]/2.,.52),
                 vec2(0),
@@ -181,7 +181,6 @@ void main()
         ).rgb;
     } else {
         u/=iResolution.y;                        
-        c = image(u);                
-    }
-    outcolor = vec4(c,1);
+        outcolor = image(u);                
+    }    
 }
