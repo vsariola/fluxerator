@@ -10,7 +10,7 @@ if (NOT YRES)
     set(YRES 1080)
 endif()
  
-message(STATUS "Configuration options (configure with cmake -D...): WINDOW=${WINDOW} MINIFY_SHADERS=${MINIFY_SHADERS} COMPRESS_LEVEL=${COMPRESS_LEVEL}")
+message(STATUS "Configuration options (configure with cmake -D...): WINDOW=${WINDOW} OPENGL_DEBUG=${OPENGL_DEBUG} VALIDATE_SHADERS=${VALIDATE_SHADERS} COMPRESS_LEVEL=${COMPRESS_LEVEL} XRES=${XRES} YRES=${YRES}")
 
 find_program(PYTHON NAMES python python3)
 if(NOT PYTHON)
@@ -137,4 +137,7 @@ endif()
 
 if (VALIDATE_SHADERS)
     add_custom_command(TARGET intro POST_BUILD COMMAND ${GLSLANGVALIDATOR} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_SYNC_FRAG})
+    if(COMPRESS_LEVEL STREQUAL OFF)    
+        add_custom_command(TARGET sync POST_BUILD COMMAND ${GLSLANGVALIDATOR} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_SYNC_FRAG})
+    endif()
 endif()
