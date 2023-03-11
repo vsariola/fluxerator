@@ -17,6 +17,10 @@
 #include "glext.h"
 #include "4klang.h"
 #include <minirocket.h>
+#ifdef SYNC
+#include "../extern/rocket/lib/sync.h"
+#include <minirocket_tracknames.h>
+#endif
 
 #pragma data_seg(".shader")
 #include <shader.inl>
@@ -68,8 +72,60 @@ static float TIME_DIVISOR = SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE);
 #pragma data_seg(".overtxt")
 static const char overtext[] = "unnamed";
 
+#ifdef SYNC
+static struct sync_device* device;
+static struct sync_cb cb;
+static const struct sync_track* s_tracks[NUM_TRACKS];
+
+static void pause(void* data, int flag)
+{
+	LPDIRECTSOUNDBUFFER buf = *((LPDIRECTSOUNDBUFFER*)data);
+	if (flag)
+		buf->Stop();
+	else
+		buf->Play(0, 0, 0);
+}
+
+static void set_row(void* data, int row)
+{
+	LPDIRECTSOUNDBUFFER buf = *((LPDIRECTSOUNDBUFFER*)data);
+	DWORD newpos = row * 2 * SAMPLES_PER_TICK * sizeof(SAMPLE_TYPE);
+	buf->SetCurrentPosition(newpos);	
+}
+
+static int is_playing(void* data)
+{
+	LPDIRECTSOUNDBUFFER buf = *((LPDIRECTSOUNDBUFFER*)data);
+	DWORD playStatus;
+	buf->GetStatus(&playStatus);
+	return playStatus & DSBSTATUS_PLAYING == DSBSTATUS_PLAYING;
+}
+#endif
+
 void entrypoint(void)
 {
+	#ifdef SYNC
+		device = sync_create_device("localsync");
+		if (!device)
+		{
+			MessageBox(NULL, "Unable to create rocketDevice", NULL, 0x00000000L);
+			ExitProcess(0);
+		}
+
+		cb.is_playing = is_playing;
+		cb.pause = pause;
+		cb.set_row = set_row;
+
+		if (sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT))
+		{
+			MessageBox(NULL, "Rocket failed to connect, run Rocket server first", NULL, 0x00000000L);
+			ExitProcess(0);
+		}
+
+		for (int i = 0; i < NUM_TRACKS; ++i)
+			s_tracks[i] = sync_get_track(device, s_trackNames[i]);
+	#endif
+
 	// initialize window
 	#ifdef WINDOW
 		HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
@@ -142,10 +198,24 @@ void entrypoint(void)
 		buf->GetCurrentPosition(&playCursor, NULL);
 
 		float syncs[NUM_SYNCS];
+#ifdef SYNC
+		int row = (int)(playCursor / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE)));
+		float row_f = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));
+
+		if (sync_update(device, row, &cb, &buf))
+			sync_tcp_connect(device, "localhost", SYNC_DEFAULT_PORT);		
+
+		syncs[0] = (float)(playCursor) / (SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE));		
+		for (int i = 0; i < NUM_TRACKS; ++i)
+		{
+			syncs[i + 1] = sync_get_val(s_tracks[i], row_f);
+		}
+#else
 		minirocket_sync(
 			playCursor / TIME_DIVISOR,
 			syncs
 		);
+#endif
 		for (int i = 0; i < MAX_INSTRUMENTS; i++) {
 			DWORD synctime = (playCursor / (2 * sizeof(SAMPLE_TYPE) * 256));
 			syncs[1 + NUM_TRACKS + i] = _4klang_envelope_buffer[synctime * 32 + i];
@@ -161,7 +231,14 @@ void entrypoint(void)
 		syncs[0] = -syncs[0];
 		glUniform1fvProc(2, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
-	} while (!GetAsyncKeyState(VK_ESCAPE) && (buf->GetStatus(&playStatus),playStatus) & DSBSTATUS_PLAYING);
+
+
+	} while (
+		!GetAsyncKeyState(VK_ESCAPE)
+		#ifndef SYNC
+		&& (buf->GetStatus(&playStatus),playStatus) & DSBSTATUS_PLAYING
+		#endif
+	);
 
 	ExitProcess(0);
 }

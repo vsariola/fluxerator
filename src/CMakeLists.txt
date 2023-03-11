@@ -114,9 +114,9 @@ add_custom_command(TARGET intro POST_BUILD
 # sync
 
 if(COMPRESS_LEVEL STREQUAL OFF)    
-    add_executable(sync WIN32 "syncmain.cpp" "4klang.asm" ${SHADERS} minirocket_tracknames.h)
+    add_executable(sync WIN32 "main.cpp" "4klang.asm" ${SHADERS} minirocket_tracknames.h)
     set_property(TARGET sync APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
-    target_compile_definitions(sync PUBLIC XRES=${XRES} YRES=${YRES})
+    target_compile_definitions(sync PUBLIC SYNC=1 XRES=${XRES} YRES=${YRES})
     target_link_libraries(sync rkt_sync opengl32.lib winmm.lib libucrt.lib dsound.lib ws2_32.lib)
     target_include_directories(sync PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
     target_include_directories(sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
