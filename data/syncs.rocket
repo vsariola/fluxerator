@@ -22,8 +22,8 @@ color="ffb28050">
 		<key row="174" value="0.400000" interpolation="1" />
 		<key row="177" value="3.140000" interpolation="0" />
 		<key row="238" value="3.140000" interpolation="1" />
-		<key row="241" value="1.570000" interpolation="0" />
-		<key row="302" value="1.570000" interpolation="1" />
+		<key row="241" value="1.270000" interpolation="0" />
+		<key row="302" value="1.270000" interpolation="1" />
 		<key row="306" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#yaw" folded="0" muteKeyCount="0"
@@ -46,6 +46,10 @@ color="ffa9b250">
 	</track>
 	<track name="cam#x" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />
+		<key row="128" value="0.000000" interpolation="1" />
+		<key row="132" value="-3.599999" interpolation="0" />
+		<key row="174" value="-3.599999" interpolation="1" />
+		<key row="177" value="0.000000" interpolation="0" />
 		<key row="750" value="0.000000" interpolation="1" />
 		<key row="753" value="4.599998" interpolation="0" />
 		<key row="814" value="4.599998" interpolation="1" />
@@ -94,6 +98,9 @@ color="ff4f71b2">
 	<track name="screen#zoom" folded="0" muteKeyCount="0"
 color="ff8850b2">
 		<key row="0" value="1.000000" interpolation="0" />
+		<key row="302" value="0.990000" interpolation="0" />
+		<key row="320" value="0.990000" interpolation="1" />
+		<key row="324" value="1.000000" interpolation="0" />
 		<key row="448" value="1.000000" interpolation="1" />
 		<key row="576" value="0.970000" interpolation="1" />
 		<key row="580" value="1.000000" interpolation="0" />
