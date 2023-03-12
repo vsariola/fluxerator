@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rootElement>
-	<bookmark row="16" />
-	<bookmark row="80" />
-<tracks rows="10000" startRow="0" endRow="2112" rowsPerBeat="4"
+<tracks rows="10000" startRow="0" endRow="1201" rowsPerBeat="4"
 beatsPerMin="125">
 	<track name="cam#roll" folded="0" muteKeyCount="0"
 color="ffb27474">
@@ -13,6 +11,8 @@ color="ffb27474">
 		<key row="561" value="0.000000" interpolation="0" />
 		<key row="896" value="0.000000" interpolation="1" />
 		<key row="1024" value="16.000000" interpolation="0" />
+		<key row="1060" value="16.000000" interpolation="1" />
+		<key row="1063" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#pitch" folded="0" muteKeyCount="0"
 color="ffb28050">
@@ -41,6 +41,8 @@ color="ffa9b250">
 		<key row="881" value="0.000000" interpolation="0" />
 		<key row="960" value="0.000000" interpolation="1" />
 		<key row="964" value="-0.800000" interpolation="0" />
+		<key row="1060" value="-0.800000" interpolation="1" />
+		<key row="1063" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#x" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />
@@ -50,6 +52,8 @@ color="ffa9b250">
 		<key row="817" value="0.000000" interpolation="0" />
 		<key row="960" value="0.000000" interpolation="1" />
 		<key row="964" value="-7.500000" interpolation="0" />
+		<key row="1057" value="-7.500000" interpolation="1" />
+		<key row="1060" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#y" folded="0" muteKeyCount="0" color="ff4fb292">
 		<key row="0" value="0.000000" interpolation="0" />
@@ -76,14 +80,16 @@ color="ff4fb292">
 		<key row="772" value="1.000000" interpolation="0" />
 		<key row="960" value="1.000000" interpolation="1" />
 		<key row="964" value="-1.000000" interpolation="0" />
+		<key row="1065" value="-1.000000" interpolation="1" />
+		<key row="1068" value="0.000000" interpolation="0" />
 	</track>
 	<track name="screen#clip" folded="0" muteKeyCount="0"
 color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="32" value="0.000000" interpolation="1" />
 		<key row="80" value="1.000000" interpolation="0" />
-		<key row="2076" value="1.000000" interpolation="1" />
-		<key row="2112" value="0.000000" interpolation="0" />
+		<key row="1136" value="1.000000" interpolation="1" />
+		<key row="1184" value="0.000000" interpolation="0" />
 	</track>
 	<track name="screen#zoom" folded="0" muteKeyCount="0"
 color="ff8850b2">
@@ -103,6 +109,8 @@ color="ff8850b2">
 		<key row="433" value="1.000000" interpolation="0" />
 		<key row="1006" value="1.000000" interpolation="1" />
 		<key row="1009" value="0.000000" interpolation="0" />
+		<key row="1088" value="0.000000" interpolation="1" />
+		<key row="1184" value="0.125000" interpolation="0" />
 	</track>
 	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
 		<key row="371" value="50.000000" interpolation="1" />
@@ -127,6 +135,8 @@ color="ff4fb292">
 		<key row="708" value="0.250000" interpolation="0" />
 		<key row="896" value="0.250000" interpolation="1" />
 		<key row="900" value="-1.060000" interpolation="0" />
+		<key row="1065" value="-1.060000" interpolation="1" />
+		<key row="1068" value="0.000000" interpolation="0" />
 	</track>
 	<track name="lattice#glow" folded="0" muteKeyCount="0"
 color="ffb25091">
@@ -144,6 +154,8 @@ color="ff4f71b2">
 		<key row="625" value="9.000000" interpolation="1" />
 		<key row="832" value="13.000000" interpolation="1" />
 		<key row="836" value="1.000000" interpolation="0" />
+		<key row="1065" value="1.000000" interpolation="1" />
+		<key row="1068" value="4.000000" interpolation="0" />
 	</track>
 	<track name="tunnel#light_rep" folded="0" muteKeyCount="0"
 color="ff60b250">
@@ -186,20 +198,26 @@ color="ff8850b2">
 	<track name="text#start" folded="0" muteKeyCount="0"
 color="ff4fb292">
 		<key row="0" value="0.010000" interpolation="0" />
-		<key row="1216" value="0.360000" interpolation="0" />
+		<key row="1120" value="0.360000" interpolation="0" />
 	</track>
 	<track name="text#width" folded="0" muteKeyCount="0"
 color="ff4f71b2">
 		<key row="0" value="0.350000" interpolation="0" />
 		<key row="64" value="0.000000" interpolation="0" />
-		<key row="1152" value="0.000000" interpolation="1" />
-		<key row="1156" value="0.360000" interpolation="0" />
-		<key row="1198" value="0.360000" interpolation="1" />
-		<key row="1201" value="0.000000" interpolation="0" />
-		<key row="1216" value="0.000000" interpolation="1" />
-		<key row="1220" value="0.640000" interpolation="0" />
-		<key row="1262" value="0.770000" interpolation="1" />
-		<key row="1265" value="0.000000" interpolation="0" />
+		<key row="1024" value="0.000000" interpolation="1" />
+		<key row="1028" value="0.360000" interpolation="0" />
+		<key row="1070" value="0.360000" interpolation="1" />
+		<key row="1073" value="0.000000" interpolation="0" />
+		<key row="1120" value="0.000000" interpolation="1" />
+		<key row="1124" value="0.660000" interpolation="0" />
+		<key row="1180" value="0.660000" interpolation="1" />
+		<key row="1184" value="0.000000" interpolation="0" />
+	</track>
+	<track name="cam#zpos" folded="0" muteKeyCount="0"
+color="ff4f71b2">
+		<key row="0" value="0.000000" interpolation="0" />
+		<key row="64" value="0.000000" interpolation="1" />
+		<key row="1088" value="64.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>

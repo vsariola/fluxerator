@@ -23,7 +23,7 @@ const int MAXSTEP = 160;
 float glow;
 float m;
 float t;
-float z = max(syncs[0],64)*2;
+float z = syncs[CAM_ZPOS]*32;
 vec3 ro;
 
 vec3 path(float z) {
