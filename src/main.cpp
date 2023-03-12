@@ -126,6 +126,9 @@ void entrypoint(void)
 			s_tracks[i] = sync_get_track(device, s_trackNames[i]);
 	#endif
 
+	// this seems to be needed if the user has set the scale of monitor, to get correct results
+	SetProcessDPIAware();
+
 	// initialize window
 	#ifdef WINDOW
 		HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
