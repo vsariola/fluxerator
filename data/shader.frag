@@ -26,8 +26,8 @@ float t;
 float z = max(syncs[0],64)*2;
 vec3 ro;
 
-vec2 path(float z) {
-    return sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*vec2(syncs[PATH_X],syncs[PATH_Y]);
+vec3 path(float z) {
+    return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*vec2(syncs[PATH_X],syncs[PATH_Y]),z);
 }
 
 vec2 pModPolar(vec2 p, float r) {
@@ -41,7 +41,7 @@ float map (vec3 p) {
     float res = 100;
     float h=0;
 
-    vec3 s=vec3(p.xy - path(p.z),p.z),q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
+    vec3 s = vec3(p.xy - path(p.z).xy,p.z),q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
     s = (1-abs(q))*s + q*abs(s);
 
     vec2 c=s.xz*3;
@@ -80,9 +80,8 @@ float map (vec3 p) {
     h = length(s-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
     res=min(res,h);
     glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
-
-    h = ro.z+sin(syncs[ROW]*PI/8)+syncs[EFFECT];
-    q = vec3(p.xy - path(h),p.z-h);
+    
+    q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
     q.xy *= w(syncs[ROW]/7);
     q.yz *= w(syncs[ROW]/9);
 
@@ -122,7 +121,7 @@ void main()
             rd.yz *= w(syncs[CAM_PITCH]);
             rd.xz *= w(syncs[CAM_YAW]);
 
-            ro = vec3(path(z)+vec2(syncs[CAM_X],syncs[CAM_Y]),z);
+            ro = path(z)+vec3(syncs[CAM_X],syncs[CAM_Y],0);
 
             for(int i=0; i<MAXSTEP; i++) {
                 m = map(ro + rd*t);
