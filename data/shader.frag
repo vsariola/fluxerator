@@ -21,6 +21,9 @@ const int MAXSTEP = 160;
 
 // globals
 float glow;
+float m;
+float t;
+float z = max(syncs[0],64)*2;
 vec3 ro;
 
 vec2 path(float z) {
@@ -113,10 +116,6 @@ void main()
 	    }
         outcolor /= n;
     } else {
-        float m;
-        float t;
-        float z = max(syncs[0],64)*2;
-
         if (abs(u.y) < syncs[SCREEN_CLIP]*.78) {
             // Roll-pitch-yaw rotations
             rd.xy *= w(syncs[CAM_ROLL]);
