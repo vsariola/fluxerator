@@ -30,10 +30,10 @@ vec2 path(float z) {
     return sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*vec2(syncs[PATH_X],syncs[PATH_Y]);
 }
 
-void pModPolar(inout vec2 p, float r) {
+vec2 pModPolar(vec2 p, float r) {
     r = 2*PI/r;
     r = mod(atan(p.y, p.x) + r/2,r)-r/2;
-    p = vec2(cos(r), sin(r))*length(p);
+    return vec2(cos(r), sin(r))*length(p);
 }
 
 float map (vec3 p) {
@@ -67,14 +67,14 @@ float map (vec3 p) {
 
     q = s - vec3(4 * mod(h,2)-2,2,-2);
     q.xy *= w(sin(h)*syncs[ROW]/8);
-    pModPolar(q.xy,8);
+    q.xy = pModPolar(q.xy,8);
     q.z = mod(q.z,4)-2;
 
     h = length(q.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
     res=min(res,h);
     glow += .00002/(.000003+h*h+syncs[LASERS]);
 
-    pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
+    s.xy = pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
     s.z = mod(s.z,1)-.5;
 
     h = length(s-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
