@@ -108,7 +108,7 @@ else()
 endif()
 
 add_custom_command(TARGET intro POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:intro> ${PROJECT_SOURCE_DIR}/dist/unnamed8k${exesuffix}.exe
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:intro> ${PROJECT_SOURCE_DIR}/dist/unnamed${exesuffix}.exe
 )
 
 # sync

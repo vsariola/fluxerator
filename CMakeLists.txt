@@ -4,9 +4,9 @@ cmake_policy(SET CMP0091 NEW)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-project(eightkay-someday
+project(fourkay-someday
     VERSION 0.0.0
-    DESCRIPTION "A base for making a 8k intro... someday"
+    DESCRIPTION "A base for making a 4k intro... someday"
     LANGUAGES C CXX)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
