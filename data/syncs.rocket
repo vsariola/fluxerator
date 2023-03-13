@@ -59,9 +59,6 @@ color="ffa9b250">
 		<key row="1057" value="-7.500000" interpolation="1" />
 		<key row="1060" value="0.000000" interpolation="0" />
 	</track>
-	<track name="cam#y" folded="0" muteKeyCount="0" color="ff4fb292">
-		<key row="0" value="0.000000" interpolation="0" />
-	</track>
 	<track name="mirror#x" folded="0" muteKeyCount="0"
 color="ff60b250">
 		<key row="0" value="0.000000" interpolation="0" />

@@ -104,13 +104,13 @@ void main()
 {
     vec2 u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 f = vec3(1), rd = normalize(vec3(u/iResolution.y,1.8));
+    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8));
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
-		    outcolor.r+=texture(sampler,.5+.5*u*f.r).r;
-		    outcolor.g+=texture(sampler,.5+.5*u*f.g).g;
-		    outcolor.b+=texture(sampler,.5+.5*u*f.b).b;
+		    outcolor.r+=texture(sampler,.5+u*f.r).r;
+		    outcolor.g+=texture(sampler,.5+u*f.g).g;
+		    outcolor.b+=texture(sampler,.5+u*f.b).b;
             f*=vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
 	    }
         outcolor /= n;
@@ -121,7 +121,7 @@ void main()
             rd.yz *= w(syncs[CAM_PITCH]);
             rd.xz *= w(syncs[CAM_YAW]);
 
-            ro = path(z)+vec3(syncs[CAM_X],syncs[CAM_Y],0);
+            ro = path(z) + vec3(syncs[CAM_X],0,0);
 
             for(int i=0; i<MAXSTEP; i++) {
                 m = map(ro + rd*t);
