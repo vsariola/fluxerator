@@ -186,18 +186,18 @@ color="ff8850b2">
 	<track name="text#start" folded="0" muteKeyCount="0"
 color="ff4fb292">
 		<key row="0" value="0.010000" interpolation="0" />
-		<key row="1120" value="0.370000" interpolation="0" />
+		<key row="1120" value="0.360000" interpolation="0" />
 	</track>
 	<track name="text#width" folded="0" muteKeyCount="0"
 color="ff4f71b2">
-		<key row="0" value="0.370001" interpolation="0" />
+		<key row="0" value="0.360000" interpolation="0" />
 		<key row="64" value="0.000000" interpolation="0" />
 		<key row="1024" value="0.000000" interpolation="1" />
-		<key row="1028" value="0.370000" interpolation="0" />
-		<key row="1070" value="0.370000" interpolation="1" />
+		<key row="1028" value="0.360000" interpolation="0" />
+		<key row="1070" value="0.360000" interpolation="1" />
 		<key row="1073" value="0.000000" interpolation="0" />
 		<key row="1120" value="0.000000" interpolation="1" />
-		<key row="1124" value="0.630000" interpolation="0" />
+		<key row="1124" value="0.640000" interpolation="0" />
 		<key row="1184" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#zpos" folded="0" muteKeyCount="0"

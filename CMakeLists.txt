@@ -4,9 +4,9 @@ cmake_policy(SET CMP0091 NEW)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-project(syncaholic
+project(fluxerator
     VERSION 0.0.0
-    DESCRIPTION "syncaholic 4k intro"
+    DESCRIPTION "fluxerator 4k intro"
     LANGUAGES C CXX)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory

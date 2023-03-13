@@ -70,7 +70,7 @@ static int pidMain;
 static float TIME_DIVISOR = SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE);
 
 #pragma data_seg(".overtxt")
-static const char overtext[] = " syncaholic chlumpie & pestis";
+static const char overtext[] = " fluxerator chlumpie & pestis";
 
 #ifdef SYNC
 static struct sync_device* device;
