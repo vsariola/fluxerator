@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rootElement>
-<tracks rows="10000" startRow="0" endRow="1201" rowsPerBeat="4"
+<tracks rows="10000" startRow="0" endRow="1200" rowsPerBeat="4"
 beatsPerMin="125">
 	<track name="cam#roll" folded="0" muteKeyCount="0"
 color="ffb27474">
@@ -139,7 +139,8 @@ color="ffb25091">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="128" value="0.000000" interpolation="1" />
 		<key row="132" value="0.030000" interpolation="0" />
-		<key row="452" value="0.000000" interpolation="0" />
+		<key row="430" value="0.030000" interpolation="1" />
+		<key row="448" value="0.000000" interpolation="0" />
 		<key row="704" value="0.000000" interpolation="1" />
 		<key row="708" value="0.200000" interpolation="0" />
 		<key row="1006" value="0.200000" interpolation="1" />
@@ -149,7 +150,8 @@ color="ffb25091">
 color="ff4f71b2">
 		<key row="0" value="4.000000" interpolation="0" />
 		<key row="430" value="4.000000" interpolation="1" />
-		<key row="433" value="41.000000" interpolation="0" />
+		<key row="433" value="21.000000" interpolation="0" />
+		<key row="452" value="41.000000" interpolation="0" />
 		<key row="750" value="41.000000" interpolation="1" />
 		<key row="753" value="11.000000" interpolation="0" />
 		<key row="832" value="11.000000" interpolation="1" />
@@ -184,18 +186,18 @@ color="ff8850b2">
 	<track name="text#start" folded="0" muteKeyCount="0"
 color="ff4fb292">
 		<key row="0" value="0.010000" interpolation="0" />
-		<key row="1120" value="0.360000" interpolation="0" />
+		<key row="1120" value="0.370000" interpolation="0" />
 	</track>
 	<track name="text#width" folded="0" muteKeyCount="0"
 color="ff4f71b2">
-		<key row="0" value="0.350000" interpolation="0" />
+		<key row="0" value="0.370001" interpolation="0" />
 		<key row="64" value="0.000000" interpolation="0" />
 		<key row="1024" value="0.000000" interpolation="1" />
-		<key row="1028" value="0.360000" interpolation="0" />
-		<key row="1070" value="0.360000" interpolation="1" />
+		<key row="1028" value="0.370000" interpolation="0" />
+		<key row="1070" value="0.370000" interpolation="1" />
 		<key row="1073" value="0.000000" interpolation="0" />
 		<key row="1120" value="0.000000" interpolation="1" />
-		<key row="1124" value="0.660000" interpolation="0" />
+		<key row="1124" value="0.630000" interpolation="0" />
 		<key row="1184" value="0.000000" interpolation="0" />
 	</track>
 	<track name="cam#zpos" folded="0" muteKeyCount="0"

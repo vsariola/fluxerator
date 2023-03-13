@@ -70,7 +70,7 @@ static int pidMain;
 static float TIME_DIVISOR = SAMPLES_PER_TICK * 2 * sizeof(SAMPLE_TYPE);
 
 #pragma data_seg(".overtxt")
-static const char overtext[] = " unnamed chlumpie & pestis";
+static const char overtext[] = " syncaholic chlumpie & pestis";
 
 #ifdef SYNC
 static struct sync_device* device;
@@ -169,7 +169,7 @@ void entrypoint(void)
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &shader_sync_frag);
 	CHECK_ERRORS();
 
-	SelectObject(hDC, CreateFont(160 * YRES / 1080, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
+	SelectObject(hDC, CreateFont(155 * YRES / 1080, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE | DEFAULT_PITCH, "Verdana"));
 	#ifdef WINDOW
 		wglUseFontBitmaps(hDC, 0, 255, 1000); // 0 does not work as a listbase when using 720p WINDOW, WHY????
 		glListBase(1000);
