@@ -62,12 +62,9 @@ float map (vec3 p) {
     h = syncs[TUNNEL_RADIUS]-length(s.xy);
     res=min(res,h);
 
-    h = floor(p.z/4+.5);
-
-    q = s - vec3(4 * mod(h,2)-2,2,-2);
-    q.xy *= w(sin(h)*syncs[ROW]/8);
-    q.xy = pModPolar(q.xy,8);
-    q.z = mod(q.z,4)-2;
+    h = floor(p.z/4+.5);    
+    q.xy = pModPolar((s.xy-vec2(4 * mod(h,2)-2,2))*w(sin(h)*syncs[ROW]/8),8);
+    q.z = mod(s.z+2,4)-2;
 
     h = length(q.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
     res=min(res,h);
@@ -83,11 +80,11 @@ float map (vec3 p) {
     q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
     q.xy *= w(syncs[ROW]/7);
     q.yz *= w(syncs[ROW]/9);
-
-    h = length(abs(abs(q)-.25))-.25;
-    res=min(res,h);
-
     q = abs(q);
+
+    h = length(abs(q-.25))-.25;
+    res=min(res,h);
+    
     h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
     res=min(res,h);
     glow += .0002/(.0003+h*h);
