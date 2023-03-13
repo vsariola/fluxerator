@@ -27,7 +27,7 @@ float z = syncs[CAM_ZPOS]*32;
 vec3 ro;
 
 vec3 path(float z) {
-    return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*vec2(syncs[PATH_X],syncs[PATH_Y]),z);
+    return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*syncs[PATH_MAG],z);
 }
 
 vec2 pModPolar(vec2 p, float r) {
