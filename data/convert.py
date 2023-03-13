@@ -56,7 +56,7 @@ def main():
         defines[trackname.upper().replace('#', '_')] = str(i+1)
         starts += [curstart]
         curstart += len(k)
-        rowtimes += [[(k[i+1][0] - k[i][0]) if i < len(k)-1 else 65535 for i, _ in enumerate(k)]]
+        rowtimes += [[(k[i+1][0] - k[i][0]) if i < len(k)-1 else 1 for i, _ in enumerate(k)]]
         def tofixed(x): return min(max(round(x*256), -32768), 32767)
         for e in k:
             f = e[1]*256

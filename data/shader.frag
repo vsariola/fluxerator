@@ -36,21 +36,20 @@ vec2 pModPolar(vec2 p, float r) {
     return vec2(cos(r), sin(r))*length(p);
 }
 
-float map (vec3 p) {
-
-    float res = 100;
-    float h = 0;
-
+float map (vec3 p) {    
     vec3 s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z),q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
     s = (1-abs(q))*s + q*abs(s);    
 
+    float res = 100;
+    float h = s.y + 1;
+
     q = s * 3;
     for(int i = 0; i<4; i++){
-   	   h += .2*abs(sin(q.x));
+   	   h += .2*abs(sin(q.x))*syncs[LANDSCAPE];
        q.xz *= mat2(.8,-.6,.6, .8);
     }
 
-    res=min(res,s.y + 1 + h*syncs[LANDSCAPE]);
+    res=min(res,h);
 
     q = abs(mod(s,4)-2);
 	q = max(q,q.yzx);
