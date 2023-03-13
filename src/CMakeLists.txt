@@ -105,6 +105,7 @@ if (NOT COMPRESS_LEVEL STREQUAL OFF)
     set (CMAKE_CXX_LINK_EXECUTABLE "${CRINKLER} <OBJECTS> /out:<TARGET> ${CRINKLER_FLAGS} <LINK_LIBRARIES>")
 else()
     set(exesuffix "${exesuffix}-uncompressed")
+    target_compile_definitions(intro PUBLIC UNCOMPRESSED)
 endif()
 
 add_custom_command(TARGET intro POST_BUILD
@@ -121,6 +122,7 @@ if(COMPRESS_LEVEL STREQUAL OFF)
     target_include_directories(sync PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
     target_include_directories(sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
     target_include_directories(sync PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
+    target_compile_definitions(sync PUBLIC UNCOMPRESSED)
 
     add_custom_command(TARGET sync POST_BUILD
        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe

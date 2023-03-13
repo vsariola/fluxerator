@@ -1,4 +1,4 @@
-// minify windows.h
+﻿// minify windows.h
 #pragma warning( disable : 6031 6387)
 #define WIN32_LEAN_AND_MEAN
 #define WIN32_EXTRA_LEAN
@@ -99,6 +99,14 @@ static int is_playing(void* data)
 	DWORD playStatus;
 	buf->GetStatus(&playStatus);
 	return playStatus & DSBSTATUS_PLAYING == DSBSTATUS_PLAYING;
+}
+#endif
+
+#ifdef UNCOMPRESSED
+extern "C"
+{
+	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 #endif
 
