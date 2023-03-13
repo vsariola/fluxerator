@@ -24,7 +24,6 @@ float glow;
 float m;
 float t;
 float z = syncs[CAM_ZPOS]*32;
-vec3 ro;
 
 vec3 path(float z) {
     return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*syncs[PATH_MAG],z);
@@ -100,7 +99,7 @@ void main()
 {
     vec2 u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8));
+    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0);
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
@@ -116,8 +115,6 @@ void main()
             rd.xy *= w(syncs[CAM_ROLL]);
             rd.yz *= w(syncs[CAM_PITCH]);
             rd.xz *= w(syncs[CAM_YAW]);
-
-            ro = path(z) + vec3(syncs[CAM_X],0,0);
 
             for(int i=0; i<MAXSTEP; i++) {
                 m = map(ro + rd*t);
