@@ -72,15 +72,19 @@ def main():
         file.write(f'numtracks equ {len(track)}\n' +
                    ''.join(r'%define ' + k + ' ' + v + '\n' for k, v in defines.items()) +
                    f'\n' +
+                   f'section		.rktracks data	align=1\n' +
                    f'track_data:\n' +
                    f'    dw {",".join(str(v) for v in starts)}\n' +
                    f'\n' +
+                   f'section		.rkrows data	align=1\n' +
                    f'row_data:\n' +
                    ''.join('    dw ' + ','.join(str(v) for v in t) + '\n' for t in rowtimes) +
                    f'\n' +
+                   f'section		.rkvalue data	align=1\n' +
                    f'value_data:\n' +
                    ''.join('    dw ' + ','.join(str(v) for v in t) + '\n' for t in values) +
                    f'\n' +
+                   f'section		.rktypes data	align=1\n' +
                    f'type_data:\n' +
                    ''.join('    db ' + ','.join(str(v) for v in t) + '\n' for t in types))
 

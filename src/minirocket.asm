@@ -2,7 +2,7 @@ bits 32
 
 section		.rkconst	data	align=1
 c_three		dw		    3
-c_256		dw		    256
+
 %include "minirocket.inc"
 
 section		.rocket     code    align=1
@@ -15,7 +15,7 @@ _minirocket_sync@8:
     fld     dword [esp+36]      ; t
     jmp     .writesync
 .syncloop:
-    movzx   edx, word [esi+ecx*2+track_data-row_data]
+    movzx   edx, word [ecx*2+track_data]
     fld     dword [esp+36]      ; t
     fisub   dword [edi+ecx*4]   ; t-t0
     fild    word [esi+edx*2]    ; d t-t0
@@ -23,21 +23,19 @@ _minirocket_sync@8:
     jae     .key                ;   goto .key;
     movzx   ebx, word [esi+edx*2]   ; ebx = d
     add     dword [edi+ecx*4], ebx  ; t0 += d
-    inc     word [esi+ecx*2+track_data-row_data]    ; index++
+    inc     word [ecx*2+track_data]    ; index++
     jmp     .syncloop
 .key:
     fidiv   word [esi+edx*2]    ; a=(t-t0)/d
-    movzx   eax, byte [esi+type_data-row_data+edx]
-.key_linear:
-    dec		eax
-	jz		.out
+    test    byte [type_data+edx], 1
+	jnz		.out
     fldz            ; 0 a
     fstp    st1     ; a
 .out:
-    fild    word [esi+value_data-row_data+edx*2]    ; v0*256 a	    
-    fidiv   word [esi+c_256-row_data]               ; v0 a
-    fild    word [esi+value_data-row_data+edx*2+2]  ; v1*256 v0 a	    
-    fidiv   word [esi+c_256-row_data]               ; v1 v0 a    
+    fild    word [value_data+edx*2]    ; v0*256 a	    
+    fidiv   word [type_data]           ; v0 a   % WARNING: we assume type data starts with 0x00 0x01 aka word 256... this is not universally true but for this intro it is
+    fild    word [value_data+edx*2+2]  ; v1*256 v0 a	    
+    fidiv   word [type_data]           ; v1 v0 a    
     fsub    st0, st1    ; v1-v0 v0 a
     fmul    st0, st2    ; a*(v1-v0) v0 a
     faddp   st1         ; v0+a*(v1-v0) a
