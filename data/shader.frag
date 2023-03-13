@@ -44,8 +44,8 @@ float map (vec3 p) {
 
     q = s * 3;
     for(int i = 0; i<4; i++){
-   	   h += .2*abs(sin(q.x))*syncs[LANDSCAPE];
-       q.xz *= mat2(.8,-.6,.6, .8);
+   	   h += abs(sin(q.x))*syncs[LANDSCAPE];
+       q.xz *= w(.6);
     }
 
     res=min(res,h);
