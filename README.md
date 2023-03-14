@@ -1,10 +1,12 @@
-# still unnamed 8k intro
+# fluxerator
+
+A windows 4k intro by chlumpie & pestis, released at Revision 2023.
 
 ## Prerequisites for building
 
 Rocket is included as a submodule in the repo, so you should clone it
 with e.g.
-`git clone --depth=1 --recursive https://github.com/vsariola/unnamed8k`
+`git clone --depth=1 --recursive https://github.com/vsariola/fluxerator`
 
 Following tools should be in path:
 
@@ -22,7 +24,7 @@ automated with CMake.
 
 1. Open the repository folder using Visual Studio
 2. Choose the configuration (heavy-1080 is the compo version).
-   Medium/heavy refers to compression level, 720/1080/2160 the
+   Light/medium/heavy refers to compression level, 720/1080/2160 the
    resolution. Debug versions are for development.
 3. Build & run.
 
@@ -35,8 +37,8 @@ configuration), you can build the sync target. Then:
 
 1. Run this rocket server: https://github.com/emoon/rocket
 2. Then run the sync.exe. Note that if you try to sync.exe before
-   running the server, it just silently closes. So the server needs to
-   be ran first.
+   running the server, it just closes. So the server needs to be ran
+   first.
 3. With the server, open the data/syncs.rocket and start syncing. Then
    save your changes back to the XML.
 
@@ -46,7 +48,8 @@ and all executables should become aware of the new number of syncs
 needed. Also, the sync tracks should appear as defines in the shader, so
 if you define a track named `cam#x`, a constant `CAM_X` will be
 available to the shader, and you can access the variable with `syncs[CAM_X]`.
-`#` are replaced with `_` and the string is made uppercase.
+The `#` grouping character is replaced with `_` and the string is made
+uppercase.
 
 Notice that the sync key values are stored as signed 8.8 fixed point.
 Thus, never use values outside the range -128 <= x < 128. Also, since
