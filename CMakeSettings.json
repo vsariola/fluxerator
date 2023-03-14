@@ -25,6 +25,26 @@
       ]
     },
     {
+      "name": "uncompressed-1080",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "OFF",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
       "name": "medium-1080",
       "generator": "Ninja",
       "configurationType": "MinSizeRel",
