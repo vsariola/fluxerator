@@ -123,7 +123,7 @@ void main()
                     break;
             }
         }
-        outcolor = pow(glow * vec3(.4,1,.3) * (.2+syncs[ENV_0]),vec3(.4545)) +
+        outcolor = pow(glow * vec3(.4,1,.3) * (.3+syncs[ENV_0]),vec3(.4545)) +
             texture(textSampler,
                 clamp(
                     u+vec2(syncs[TEXT_WIDTH]/2,.52),
