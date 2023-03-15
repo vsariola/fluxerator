@@ -45,21 +45,6 @@
       ]
     },
     {
-      "name": "medium-1080",
-      "generator": "Ninja",
-      "configurationType": "MinSizeRel",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [
-        "msvc_x86"
-      ],
-      "variables": [
-      ]
-    },
-    {
       "name": "light-1080",
       "generator": "Ninja",
       "configurationType": "MinSizeRel",
@@ -196,6 +181,66 @@
           "name": "COMPRESS_LEVEL",
           "value": "HEAVY",
           "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "sync-1080",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=1920 -DYRES=1080",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "OPENGL_DEBUG",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "WINDOW",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "SYNC",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
+    },
+    {
+      "name": "capture-1080",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=1920 -DYRES=1080",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "OFF",
+          "type": "STRING"
+        },
+        {
+          "name": "CAPTURE",
+          "value": "True",
+          "type": "BOOL"
         }
       ]
     }

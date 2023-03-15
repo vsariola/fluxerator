@@ -34,26 +34,25 @@ CMake should copy the exes into the dist/ folder.
 
 ## How to sync
 
-When the compression is switched off (e.g. in one of the debug
-configuration), you can build the sync target. Then:
+Choose the sync-1080 configuration, which has SYNC macro defined. Build
+it and then:
 
 1. Run this rocket server: https://github.com/emoon/rocket
-2. Then run the sync.exe. Note that if you try to sync.exe before
-   running the server, it just closes. So the server needs to be ran
-   first.
+2. Then run the sync build intro. Note that if you try to sync.exe
+   before running the server, it just closes. So the server needs to be
+   ran first.
 3. With the server, open the data/syncs.rocket and start syncing. Then
    save your changes back to the XML.
 
 If you need more sync tracks, just manually add a new empty track to the
 syncs.rocket XML before building the `sync` target
-(`<track name="mygroup#mytrackname"/>`). When building `sync` and
-`intro`, the file will get processed and all executables will become
-aware of the sync variable. The new track will appear as a const
-variable in the shader. For a track named `mygroup#mytrackname`, a
-constant `MYGROUP_MYTRACKNAME` will be available to the shader, and you
-can access the variable with `syncs[MYGROUP_MYTRACKNAME]`. The `#`
-grouping character is replaced with `_` and the string is made
-uppercase.
+(`<track name="mygroup#mytrackname"/>`). When building intro, the file
+will get processed and the executable will become aware of the sync
+variable. The new track will appear as a const variable in the shader.
+For a track named `mygroup#mytrackname`, a constant
+`MYGROUP_MYTRACKNAME` will be available to the shader, and you can
+access the variable with `syncs[MYGROUP_MYTRACKNAME]`. The `#` grouping
+character is replaced with `_` and the string is made uppercase.
 
 Notice that when building the final intro, the sync key values are
 stored as signed 8.8 fixed point, and as an optimization, all other
@@ -76,7 +75,8 @@ example, 1.01 will be represented by integer 259, which becomes ~ 1.012.
 - Glow: glow can be accumulated in the raymarcher map function with glow
   += a/(b+d*d), where a and b are constants and d is the SDF distance to
   object. The glow can be then later added to the pixel color with color
-  += glow * glowcolor after the raymarcher is done.
+  += glow * glowcolor after the raymarcher is done. After learning this,
+  I made pretty much everything glow :D
 - Rocket: Rocket is awesome, but to fit things in a 4k intro, the player
   had to be rewritten in x86 assembly. The player is approx. 100 bytes
   after compression, or since we didn't use any other interpolation than

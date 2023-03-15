@@ -1,6 +1,8 @@
 option(WINDOW "Define WINDOW macro, showing the intro in a small window instead of full screen" OFF)
 option(OPENGL_DEBUG "Show OpenGL errors in a message box" OFF)
 option(VALIDATE_SHADERS "Validate shaders using glslangValidator" ON)
+option(SYNC "Build version for rocket syncing" OFF)
+option(CAPTURE "Build version for capturing video" OFF)
 set(COMPRESS_LEVEL "medium" CACHE STRING "Crinkler compression level: off, light, medium, heavy")
 set_property(CACHE COMPRESS_LEVEL PROPERTY STRINGS OFF LIGHT MEDIUM HEAVY)
 if (NOT XRES)
@@ -10,7 +12,7 @@ if (NOT YRES)
     set(YRES 1080)
 endif()
  
-message(STATUS "Configuration options (configure with cmake -D...): WINDOW=${WINDOW} OPENGL_DEBUG=${OPENGL_DEBUG} VALIDATE_SHADERS=${VALIDATE_SHADERS} COMPRESS_LEVEL=${COMPRESS_LEVEL} XRES=${XRES} YRES=${YRES}")
+message(STATUS "Configuration options (configure with cmake -D...): WINDOW=${WINDOW} OPENGL_DEBUG=${OPENGL_DEBUG} VALIDATE_SHADERS=${VALIDATE_SHADERS} COMPRESS_LEVEL=${COMPRESS_LEVEL} XRES=${XRES} YRES=${YRES} SYNC=${SYNC} CAPTURE=${CAPTURE}")
 
 find_program(PYTHON NAMES python python3)
 if(NOT PYTHON)
@@ -54,6 +56,15 @@ add_custom_command(
 
 # intro
 
+add_executable(intro WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc" minirocket_tracknames.h bitmap.h bitmap.cpp)
+set_source_files_properties(minirocket.asm OBJECT_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/minirocket.inc)
+set_property(TARGET intro APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
+target_compile_definitions(intro PUBLIC XRES=${XRES} YRES=${YRES})
+target_link_libraries(intro rkt_sync opengl32.lib winmm.lib libucrt.lib dsound.lib ws2_32.lib ucrt.lib)
+target_include_directories(intro PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
+target_include_directories(intro PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
+target_include_directories(intro PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
+
 set(exesuffix "")
 if (NOT YRES EQUAL "1080")
     set(exesuffix "${exesuffix}-${YRES}")
@@ -61,22 +72,26 @@ endif()
 if (WINDOW)
     set(exesuffix "${exesuffix}-window")
     message("Defining WINDOW macro")
-    add_compile_definitions(WINDOW)
+    target_compile_definitions(intro PUBLIC WINDOW)    
 endif()
 if (OPENGL_DEBUG)    
     set(exesuffix "${exesuffix}-gldebug")
     message("Defining OPENGL_DEBUG macro")
-    add_compile_definitions(OPENGL_DEBUG)
+    target_compile_definitions(intro PUBLIC OPENGL_DEBUG)        
 endif()
-
-add_executable(intro WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc")
-set_source_files_properties(minirocket.asm OBJECT_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/minirocket.inc)
-set_property(TARGET intro APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
-target_compile_definitions(intro PUBLIC XRES=${XRES} YRES=${YRES})
-target_link_libraries(intro opengl32.lib winmm.lib libucrt.lib dsound.lib)
-target_include_directories(intro PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
-target_include_directories(intro PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
-target_include_directories(intro PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
+if (SYNC)    
+    set(exesuffix "${exesuffix}-sync")
+    message("Defining SYNC macro")
+    add_compile_definitions(SYNC)
+    set(COMPRESS_LEVEL OFF)
+    set(CAPTURE OFF)
+endif()
+if (CAPTURE)    
+    set(exesuffix "${exesuffix}-capture")
+    message("Defining CAPTURE macro")
+    add_compile_definitions(CAPTURE)
+    set(COMPRESS_LEVEL OFF)
+endif()
 
 set_property(TARGET intro APPEND PROPERTY COMPILE_FLAGS " /Os /O1 /Ob1 /Oi /Oy /GS- /arch:IA32 /fp:fast")
 if(NOT COMPRESS_LEVEL STREQUAL OFF)    
@@ -112,37 +127,6 @@ add_custom_command(TARGET intro POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:intro> ${PROJECT_SOURCE_DIR}/dist/fluxerator${exesuffix}.exe
 )
 
-# sync
-
-if(COMPRESS_LEVEL STREQUAL OFF)    
-    add_executable(sync WIN32 "main.cpp" "4klang.asm" ${SHADERS} minirocket_tracknames.h)
-    set_property(TARGET sync APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
-    target_compile_definitions(sync PUBLIC SYNC=1 XRES=${XRES} YRES=${YRES})
-    target_link_libraries(sync rkt_sync opengl32.lib winmm.lib libucrt.lib dsound.lib ws2_32.lib)
-    target_include_directories(sync PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
-    target_include_directories(sync PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
-    target_include_directories(sync PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
-    target_compile_definitions(sync PUBLIC UNCOMPRESSED)
-
-    add_custom_command(TARGET sync POST_BUILD
-       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe
-    )
-
-    add_executable(capture WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc" minirocket_tracknames.h bitmap.h bitmap.cpp)
-    set_property(TARGET capture APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
-    target_compile_definitions(capture PUBLIC CAPTURE=1 XRES=${XRES} YRES=${YRES})
-    target_link_libraries(capture rkt_sync opengl32.lib winmm.lib ucrt.lib dsound.lib ws2_32.lib)
-    target_include_directories(capture PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
-    target_include_directories(capture PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
-    target_include_directories(capture PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
-    target_compile_definitions(capture PUBLIC UNCOMPRESSED)
-
-    add_custom_command(TARGET capture POST_BUILD
-       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe
-    )
-
-endif()
-
 if (VALIDATE_SHADERS)
     find_program(GLSLANGVALIDATOR NAMES glslangValidator)
     if (NOT GLSLANGVALIDATOR)
@@ -152,8 +136,5 @@ if (VALIDATE_SHADERS)
 endif()
 
 if (VALIDATE_SHADERS)
-    add_custom_command(TARGET intro POST_BUILD COMMAND ${GLSLANGVALIDATOR} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_SYNC_FRAG})
-    if(COMPRESS_LEVEL STREQUAL OFF)    
-        add_custom_command(TARGET sync POST_BUILD COMMAND ${GLSLANGVALIDATOR} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_SYNC_FRAG})
-    endif()
+    add_custom_command(TARGET intro POST_BUILD COMMAND ${GLSLANGVALIDATOR} ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_SYNC_FRAG})    
 endif()
