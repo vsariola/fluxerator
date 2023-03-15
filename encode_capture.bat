@@ -1,0 +1,1 @@
+ffmpeg -f f32le -ac 2 -i out\build\debug-1080\src\song.raw -framerate 60 -i "out/build/debug-1080/src/frames/frame%%06d.bmp" -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p output.mkv

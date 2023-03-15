@@ -21,6 +21,11 @@
 #include "../extern/rocket/lib/sync.h"
 #include <minirocket_tracknames.h>
 #endif
+#ifdef CAPTURE
+#include "bitmap.h"
+#include <stdlib.h>
+#include <stdio.h>
+#endif
 
 #pragma data_seg(".shader")
 #include <shader.inl>
@@ -110,6 +115,13 @@ extern "C"
 }
 #endif
 
+#ifdef CAPTURE
+static long int frame_counter = 0;
+#ifndef CAPTURE_FRAME_RATE
+#define CAPTURE_FRAME_RATE 60
+#endif
+#endif
+
 void entrypoint(void)
 {
 	#ifdef SYNC
@@ -159,7 +171,16 @@ void entrypoint(void)
 	DWORD l1;
 
 	buf->Lock(0, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), &p1, &l1, NULL, NULL, NULL);
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, p1, 0, 0);
+	#ifndef CAPTURE
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, p1, 0, 0);
+	#else
+		CreateDirectory("frames", NULL);
+		_4klang_render(p1);
+		FILE* f;		
+		f = fopen("song.raw", "wb");
+		fwrite((void*)p1, sizeof(SAMPLE_TYPE), 2 * MAX_SAMPLES, f);
+		fclose(f);		
+	#endif
 
 	// initalize opengl context
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
@@ -198,6 +219,27 @@ void entrypoint(void)
 		((PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap"))(GL_TEXTURE_2D);
 		glRects(-1, -1, 1, 1);
 
+		#if CAPTURE
+		// first "frame" is actually drawing the text 
+		if (frame_counter > 0) {
+			static unsigned char framepixels[XRES * YRES * 4];
+			glReadBuffer(GL_BACK);
+			glPixelStorei(GL_PACK_ALIGNMENT, 1);
+			glReadPixels(0, 0, XRES, YRES, GL_BGRA, GL_UNSIGNED_BYTE, framepixels);			
+			for (int y = 0; y < (YRES + 1) / 2; ++y)
+				for (int x = 0; x < XRES; ++x)
+					for (int c = 0; c < 4; ++c) {
+						auto b = framepixels[(x + y * XRES) * 4 + c]; framepixels[(x + y * XRES) * 4 + c] = framepixels[(x + (YRES - 1 - y) * XRES) * 4 + c]; framepixels[(x + (YRES - 1 - y) * XRES) * 4 + c] = b;
+					}
+			HBITMAP bitmap = CreateBitmap(XRES, YRES, 1, 32, framepixels);
+			PBITMAPINFO bitmapinfo = CreateBitmapInfoStruct(window, bitmap);
+			char filename[1024];
+			wsprintf(filename, "frames\\frame%06d.bmp", frame_counter);
+			CreateBMPFile(window, filename, bitmapinfo, bitmap, hDC);
+			DeleteObject(bitmap);
+		}
+		#endif
+
 		SwapBuffers(hDC);
 
 		(((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture")))(GL_TEXTURE1);
@@ -215,7 +257,11 @@ void entrypoint(void)
 		CHECK_ERRORS();
 
 		long playCursor;
-		buf->GetCurrentPosition((DWORD*) & playCursor, NULL);
+#if CAPTURE		
+		playCursor = (frame_counter++ * SAMPLE_RATE) / CAPTURE_FRAME_RATE * 2 * sizeof(SAMPLE_TYPE);
+#else		
+		buf->GetCurrentPosition((DWORD*)&playCursor, NULL);
+#endif		
 
 		float syncs[NUM_SYNCS];
 #ifdef SYNC
@@ -255,8 +301,11 @@ void entrypoint(void)
 
 	} while (
 		!GetAsyncKeyState(VK_ESCAPE)
-		#ifndef SYNC
+		#if !defined(SYNC) && !defined(CAPTURE)
 		&& (buf->GetStatus(&playStatus),playStatus) & DSBSTATUS_PLAYING
+		#endif
+		#ifdef CAPTURE
+		&& frame_counter < CAPTURE_FRAME_RATE*MAX_SAMPLES/SAMPLE_RATE
 		#endif
 	);
 

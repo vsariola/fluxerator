@@ -127,6 +127,20 @@ if(COMPRESS_LEVEL STREQUAL OFF)
     add_custom_command(TARGET sync POST_BUILD
        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe
     )
+
+    add_executable(capture WIN32 "main.cpp" "4klang.asm" "minirocket.asm" ${SHADERS} "minirocket.h" "minirocket.inc" minirocket_tracknames.h bitmap.h bitmap.cpp)
+    set_property(TARGET capture APPEND PROPERTY LINK_FLAGS " /ENTRY:entrypoint")                      
+    target_compile_definitions(capture PUBLIC CAPTURE=1 XRES=${XRES} YRES=${YRES})
+    target_link_libraries(capture rkt_sync opengl32.lib winmm.lib ucrt.lib dsound.lib ws2_32.lib)
+    target_include_directories(capture PUBLIC ${SHADER_INCLUDE_DIR}) # for the shaders
+    target_include_directories(capture PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) # for nasm to find 4klang
+    target_include_directories(capture PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) # for the sync header
+    target_compile_definitions(capture PUBLIC UNCOMPRESSED)
+
+    add_custom_command(TARGET capture POST_BUILD
+       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:sync> ${PROJECT_SOURCE_DIR}/dist/sync${exesuffix}.exe
+    )
+
 endif()
 
 if (VALIDATE_SHADERS)
