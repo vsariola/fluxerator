@@ -21,9 +21,10 @@ const int MAXSTEP = 160;
 
 // globals
 float glow;
-float m;
 float t;
 float z = syncs[CAM_ZPOS]*32;
+float res;
+float h;
 
 vec3 path(float z) {
     return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*syncs[PATH_MAG],z);
@@ -35,62 +36,6 @@ vec2 pModPolar(vec2 p, float r) {
     return vec2(cos(r), sin(r))*length(p);
 }
 
-float map (vec3 p) {    
-    vec3 s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z),q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
-    s = (1-abs(q))*s + q*abs(s);    
-
-    float res = 100;
-    float h = s.y + 1;
-
-    q = s * 3;
-    for(int i = 0; i<4; i++){
-   	   h += abs(sin(q.x))*syncs[LANDSCAPE];
-       q.xz *= w(.6);
-    }
-
-    res=min(res,h);
-
-    q = abs(mod(s,4)-2);
-	q = max(q,q.yzx);
-	q = min(q,q.yzx);
-	h = min(q,q.yzx).x;
-
-    res=min(res,h-.2+syncs[LATTICE_SIZE]);
-    glow += .0003/(.003+h*h)*syncs[LATTICE_GLOW];
-
-    h = syncs[TUNNEL_RADIUS]-length(s.xy);
-    res=min(res,h);
-
-    h = floor(p.z/4+.5);    
-    q.xy = pModPolar((s.xy-vec2(4 * mod(h,2)-2,2))*w(sin(h)*syncs[ROW]/8),8);
-    q.z = mod(s.z+2,4)-2;
-
-    h = length(q.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
-    res=min(res,h);
-    glow += .00002/(.000003+h*h+syncs[LASERS]);
-
-    q.xy = pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
-    q.z = mod(s.z,1)-.5;
-
-    h = length(q-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
-    res=min(res,h);
-    glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
-    
-    q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
-    q.xy *= w(syncs[ROW]/7);
-    q.yz *= w(syncs[ROW]/9);
-    q = abs(q);
-
-    h = length(abs(q-.25))-.25;
-    res=min(res,h);
-    
-    h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
-    res=min(res,h);
-    glow += .0002/(.0003+h*h);
-
-    return res;
-}
-
 // -----------------------------
 // when copying, copy up to here
 // -----------------------------
@@ -99,7 +44,7 @@ void main()
 {
     vec2 u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0);
+    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),p,s,q;
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
@@ -117,9 +62,61 @@ void main()
             rd.xz *= w(syncs[CAM_YAW]);
 
             for(int i=0; i<MAXSTEP; i++) {
-                m = map(ro + rd*t);
-                t += m/3;
-                if (abs(m)<t*MINDIST || t>MAXDIST)
+                p = ro + rd*t;
+                s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z);
+                q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
+                s = (1-abs(q))*s + q*abs(s);    
+                
+                h = s.y + 1;
+
+                q = s * 3;
+                for(int i = 0; i<4; i++){
+   	               h += abs(sin(q.x))*syncs[LANDSCAPE];
+                   q.xz *= w(.6);
+                }
+
+                res=min(MAXDIST,h);
+
+                q = abs(mod(s,4)-2);
+	            q = max(q,q.yzx);
+	            q = min(q,q.yzx);
+	            h = min(q,q.yzx).x;
+
+                res=min(res,h-.2+syncs[LATTICE_SIZE]);
+                glow += .0003/(.003+h*h)*syncs[LATTICE_GLOW];
+
+                h = syncs[TUNNEL_RADIUS]-length(s.xy);
+                res=min(res,h);
+
+                h = floor(p.z/4+.5);    
+                q.xy = pModPolar((s.xy-vec2(4 * mod(h,2)-2,2))*w(sin(h)*syncs[ROW]/8),8);
+                q.z = mod(s.z+2,4)-2;
+
+                h = length(q.yz)+.4-syncs[ENV_0]*.45+syncs[LASERS];
+                res=min(res,h);
+                glow += .00002/(.000003+h*h+syncs[LASERS]);
+
+                q.xy = pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
+                q.z = mod(s.z,1)-.5;
+
+                h = length(q-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
+                res=min(res,h);
+                glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
+    
+                q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
+                q.xy *= w(syncs[ROW]/7);
+                q.yz *= w(syncs[ROW]/9);
+                q = abs(q);
+
+                h = length(abs(q-.25))-.25;
+                res=min(res,h);
+    
+                h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
+                res=min(res,h);
+                glow += .0002/(.0003+h*h);
+
+                t += res/3;
+                if (abs(res)<t*MINDIST || t>MAXDIST)
                     break;
             }
         }
