@@ -106,9 +106,13 @@ void main()
                 q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
                 q.xy *= w(syncs[ROW]/7);
                 q.yz *= w(syncs[ROW]/9);
+                s = q;
                 q = abs(q);
+                                
+                s.yz *= w(s.x*2+syncs[ROW]/2);
+                s = abs(s)-.25;
+                h = length(s*s*s); 
 
-                h = length(abs(q-.25))-.25;
                 res=min(res,h);
     
                 h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
