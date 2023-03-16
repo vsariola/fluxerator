@@ -65,8 +65,8 @@ void main()
                 p = ro + rd*t;
                 s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z);
                 q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
-                s = (1-abs(q))*s + q*abs(s);    
-                
+                s = (1-abs(q))*s + q*abs(s);
+
                 h = s.y + 1;
 
                 q = s * 3;
@@ -88,7 +88,7 @@ void main()
                 h = syncs[TUNNEL_RADIUS]-length(s.xy);
                 res=min(res,h);
 
-                h = floor(p.z/4+.5);    
+                h = floor(p.z/4+.5);
                 q.xy = pModPolar((s.xy-vec2(4 * mod(h,2)-2,2))*w(sin(h)*syncs[ROW]/8),8);
                 q.z = mod(s.z+2,4)-2;
 
@@ -102,19 +102,18 @@ void main()
                 h = length(q-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
                 res=min(res,h);
                 glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
-    
+
                 q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
                 q.xy *= w(syncs[ROW]/7);
                 q.yz *= w(syncs[ROW]/9);
                 s = q;
-                q = abs(q);
-                                
-                s.yz *= w(s.x*2+syncs[ROW]/2);
-                s = abs(s)-.25;
-                h = length(s*s*s); 
 
+                q.yz *= w(q.x*2+syncs[ROW]/2);
+                q = abs(q)-.25;
+                h = length(q*q*q);
                 res=min(res,h);
-    
+
+                q = abs(s);
                 h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
                 res=min(res,h);
                 glow += .0002/(.0003+h*h);
