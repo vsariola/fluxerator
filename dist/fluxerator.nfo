@@ -10,8 +10,9 @@ Massive love:
     LLB (Shader Minifier)
     kusma (Rocket)
     emoon (RocketEditor)
-    fizzer (drawing text)
-    gargaj (DirectSound help)
+    fizzer (drawing text help)
+    gargaj (DirectSound help, debugging a version to run on ATI cards)
+	las (size optimization help)
 
 Source:
     https://github.com/vsariola/fluxerator
