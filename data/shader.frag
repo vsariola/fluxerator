@@ -65,7 +65,7 @@ void main()
                 p = ro + rd*t;
                 s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z);
                 q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
-                s = (1-abs(q))*s + q*abs(s);
+                s = s + q*abs(s) - s*abs(q);
 
                 h = s.y + 1;
 
