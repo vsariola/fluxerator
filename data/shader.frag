@@ -20,11 +20,11 @@ const float MAXDIST = 125;
 const int MAXSTEP = 160;
 
 // globals
-float glow;
-float t;
+float glow = 0;
+float t = 0;
 float z = syncs[CAM_ZPOS]*32;
-float res;
-float h;
+float res = 0;
+float h = 0;
 
 vec3 path(float z) {
     return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*syncs[PATH_MAG],z);
@@ -44,7 +44,7 @@ void main()
 {
     vec2 u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),p,s,q;
+    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),p = vec3(0),s = vec3(0),q = vec3(0);
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
