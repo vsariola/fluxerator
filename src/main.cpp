@@ -64,8 +64,12 @@ static WAVEFORMATEX WaveFMT =
 	0                                    // extension not needed
 };
 
+// the song takes 47740800 bytes, but we allocate more so that:
+// 1) the playcursor keeps on playing empty music afterwards
+// 2) we allocate aligned number of bytes (log2(47740800) = 25.5
+#define BUFFER_SIZE (1 << 26)
 #pragma data_seg(".descfmt")
-static DSBUFFERDESC bufferDesc = { sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), NULL, &WaveFMT, NULL };
+static DSBUFFERDESC bufferDesc = { sizeof(DSBUFFERDESC), DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS | DSBCAPS_TRUEPLAYPOSITION, BUFFER_SIZE, NULL, &WaveFMT, NULL };
 
 #pragma bss_seg(".pid")
 // static allocation saves a few bytes
@@ -170,7 +174,7 @@ void entrypoint(void)
 	LPVOID p1;
 	DWORD l1;
 
-	buf->Lock(0, 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE), &p1, &l1, NULL, NULL, NULL);
+	buf->Lock(0, BUFFER_SIZE, &p1, &l1, NULL, NULL, NULL);
 	#ifndef CAPTURE
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, p1, 0, 0);
 	#else
@@ -208,7 +212,7 @@ void entrypoint(void)
 
 	buf->Play(0, 0, 0);
 
-	DWORD playStatus;
+	long playCursor;
 
 	do
 	{
@@ -256,7 +260,6 @@ void entrypoint(void)
 		((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidMain);
 		CHECK_ERRORS();
 
-		long playCursor;
 #if CAPTURE		
 		playCursor = (frame_counter++ * SAMPLE_RATE) / CAPTURE_FRAME_RATE * 2 * sizeof(SAMPLE_TYPE);
 #else		
@@ -302,7 +305,7 @@ void entrypoint(void)
 	} while (
 		!GetAsyncKeyState(VK_ESCAPE)
 		#if !defined(SYNC) && !defined(CAPTURE)
-		&& (buf->GetStatus(&playStatus),playStatus) & DSBSTATUS_PLAYING
+		&& playCursor < 2 * MAX_SAMPLES * sizeof(SAMPLE_TYPE)
 		#endif
 		#ifdef CAPTURE
 		&& frame_counter < CAPTURE_FRAME_RATE*MAX_SAMPLES/SAMPLE_RATE
