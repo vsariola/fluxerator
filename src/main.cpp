@@ -156,13 +156,12 @@ void entrypoint(void)
 	// initialize window
 	#ifdef WINDOW
 		HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
-		const HDC hDC = GetDC(window);
 	#else // full screen, the default behaviour
 		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
 		ShowCursor(0);
 		HWND window = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
-		const HDC hDC = GetDC(window);
 	#endif
+	const HDC hDC = GetDC(window);
 
 	LPDIRECTSOUND lpds;
 	LPDIRECTSOUNDBUFFER buf;
