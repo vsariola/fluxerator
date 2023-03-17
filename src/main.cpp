@@ -288,14 +288,14 @@ void entrypoint(void)
 		}
 
 		PFNGLUNIFORM1FVPROC glUniform1fvProc = ((PFNGLUNIFORM1FVPROC)wglGetProcAddress("glUniform1fv"));
-		glUniform1fvProc(2, NUM_SYNCS, syncs);
+		glUniform1fvProc(0, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
 
 		glRects(-1, -1, 1, 1);
 		CHECK_ERRORS();
 
 		syncs[0] = -syncs[0];
-		glUniform1fvProc(2, NUM_SYNCS, syncs);
+		glUniform1fvProc(0, NUM_SYNCS, syncs);
 		CHECK_ERRORS();
 
 
