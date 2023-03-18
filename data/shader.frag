@@ -106,14 +106,17 @@ void main()
                 q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
                 q.xy *= w(syncs[ROW]/7);
                 q.yz *= w(syncs[ROW]/9);
-                s = q;
 
-                q.yz *= w(q.x*2+syncs[ROW]/2);
-                q = abs(q)-.25;
-                h = length(q*q*q);
+                s = q * 20;
+                h = 20;
+                for(int i = 0; i<4; i++) {
+                   s -= clamp(s,-1,1) * 1.93;
+                   h *= 17/dot(s,s); s *= 17/dot(s,s);
+                }
+                h = length(max(abs(s)/h-.07,0.));
                 res=min(res,h);
 
-                q = abs(s);
+                q = abs(q);
                 h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
                 res=min(res,h);
                 glow += .0002/(.0003+h*h);
