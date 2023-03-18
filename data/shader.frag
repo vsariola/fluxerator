@@ -44,14 +44,14 @@ void main()
 {
     vec2 u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 f = vec3(.5), rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),p,s,q;
+    vec3 rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),q=vec3(.5),p,s;
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
-		    outcolor.r+=texture(sampler,.5+u*f.r).r;
-		    outcolor.g+=texture(sampler,.5+u*f.g).g;
-		    outcolor.b+=texture(sampler,.5+u*f.b).b;
-            f*=vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
+		    outcolor.r+=texture(sampler,.5+u*q.r).r;
+		    outcolor.g+=texture(sampler,.5+u*q.g).g;
+		    outcolor.b+=texture(sampler,.5+u*q.b).b;
+            q *= vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
 	    }
         outcolor /= n;
     } else {
@@ -113,7 +113,7 @@ void main()
                    s -= clamp(s,-1,1) * 1.93;
                    h *= 17/dot(s,s); s *= 17/dot(s,s);
                 }
-                h = length(max(abs(s)/h-.07,0.));
+                h = length(max(abs(s)/h-.07,0));
                 res=min(res,h);
 
                 q = abs(q);
