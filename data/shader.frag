@@ -51,7 +51,7 @@ void main()
 		    outcolor.r+=texture(sampler,.5+u*q.r).r;
 		    outcolor.g+=texture(sampler,.5+u*q.g).g;
 		    outcolor.b+=texture(sampler,.5+u*q.b).b;
-            q *= vec3(.9988,.9982,.996)*syncs[SCREEN_ZOOM];
+            q *= vec3(.999,.998,.996)*syncs[SCREEN_ZOOM];
 	    }
         outcolor /= n;
     } else {
