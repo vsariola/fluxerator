@@ -31,7 +31,7 @@ vec3 path(float z) {
 }
 
 vec2 pModPolar(vec2 p, float r) {
-    r = 2*PI/r;
+    r = 6.28/r;
     r = mod(atan(p.y, p.x) + r/2,r)-r/2;
     return vec2(cos(r), sin(r))*length(p);
 }
