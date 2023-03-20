@@ -8,7 +8,6 @@ layout(binding = 1) uniform sampler2D sampler;
 layout(location = 0) uniform float syncs[NUM_SYNCS];
 
 out vec3 outcolor;
-vec2 iResolution = vec2(@XRES@,@YRES@);
 
 // ----------------------------
 // when copying, copy from here
@@ -22,9 +21,9 @@ const int MAXSTEP = 160;
 // globals
 float glow;
 float t;
-float z = syncs[CAM_ZPOS]*32;
 float res;
 float h;
+float z = syncs[CAM_ZPOS]*32;
 
 vec3 path(float z) {
     return vec3(sin(vec2(z/11,z/5)+sin(vec2(z/7,z/9))*2)*syncs[PATH_MAG],z);
@@ -42,7 +41,7 @@ vec2 pModPolar(vec2 p, float r) {
 
 void main()
 {
-    vec2 u = 2*gl_FragCoord.xy-iResolution;
+    vec2 iResolution = vec2(@XRES@,@YRES@), u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
     vec3 rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),q=vec3(.5),p,s;
     u/=iResolution;
