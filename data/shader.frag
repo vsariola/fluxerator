@@ -103,7 +103,7 @@ void main()
                 res=min(res,h);
                 glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
 
-                q = p - path(z+sin(syncs[ROW]*PI/8)+syncs[EFFECT]);
+                q = p - path(z+sin(syncs[ROW]*.4)+syncs[EFFECT]);
                 q.xy *= w(syncs[ROW]/7);
                 q.yz *= w(syncs[ROW]/9);
 
