@@ -42,7 +42,8 @@ void main()
 {
     vec2 iResolution = vec2(@XRES@,@YRES@), u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 rd = normalize(vec3(u/iResolution.y,1.8)), p = path(z) + vec3(syncs[CAM_X],0,0),q=vec3(.5),s, glow;
+    vec3 rd = normalize(vec3(u/iResolution.y,1.8)), p = path(z),q=vec3(.5),s, glow;
+    p.x += syncs[CAM_X];
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
