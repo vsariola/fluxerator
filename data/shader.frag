@@ -19,7 +19,6 @@ const float MAXDIST = 125;
 const int MAXSTEP = 160;
 
 // globals
-float glow;
 float t;
 float res;
 float h;
@@ -43,7 +42,7 @@ void main()
 {
     vec2 iResolution = vec2(@XRES@,@YRES@), u = 2*gl_FragCoord.xy-iResolution;
     const int n=10;
-    vec3 rd = normalize(vec3(u/iResolution.y,1.8)), ro = path(z) + vec3(syncs[CAM_X],0,0),q=vec3(.5),p,s;
+    vec3 rd = normalize(vec3(u/iResolution.y,1.8)), p = path(z) + vec3(syncs[CAM_X],0,0),q=vec3(.5),s, glow;
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
@@ -60,8 +59,7 @@ void main()
             rd.yz *= w(syncs[CAM_PITCH]);
             rd.xz *= w(syncs[CAM_YAW]);
 
-            for(int i=0; i<MAXSTEP; i++) {
-                p = ro + rd*t;
+            for(int i=0; i<MAXSTEP; i++) {                
                 s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z);
                 q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
                 s = s + q*abs(s) - s*abs(q);
@@ -102,7 +100,7 @@ void main()
                 res=min(res,h);
                 glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
 
-                q = p - path(z+sin(syncs[ROW]*.4)+syncs[EFFECT]);
+                q = p - path(z+sin(syncs[ROW]*.4)+syncs[FRACTAL_Z]);
                 q.xy *= w(syncs[ROW]/7);
                 q.yz *= w(syncs[ROW]/9);
 
@@ -118,9 +116,10 @@ void main()
                 q = abs(q);
                 h = length(q-(q.z+q.y+q.z)/3.1)+.42-syncs[ENV_0]*.45;
                 res=min(res,h);
-                glow += .0002/(.0003+h*h);
+                glow += .0002/(.0003+h*h) * vec3(1/syncs[FRACTAL_COLOR],syncs[FRACTAL_COLOR],1/syncs[FRACTAL_COLOR]);
 
                 t += res/3;
+                p += rd * res/3;
                 if (abs(res)<t*MINDIST || t>MAXDIST)
                     break;
             }

@@ -104,7 +104,8 @@ color="ff8850b2">
 		<key row="1088" value="0.000000" interpolation="1" />
 		<key row="1184" value="0.020000" interpolation="1" />
 	</track>
-	<track name="effect" folded="0" muteKeyCount="0" color="ff60b250">
+	<track name="fractal#z" folded="0" muteKeyCount="0"
+color="ff60b250">
 		<key row="0" value="50.000000" interpolation="1" />
 		<key row="380" value="50.000000" interpolation="1" />
 		<key row="388" value="4.000000" interpolation="1" />
@@ -114,6 +115,12 @@ color="ff8850b2">
 		<key row="689" value="5.000000" interpolation="1" />
 		<key row="814" value="2.750000" interpolation="1" />
 		<key row="817" value="-8.250000" interpolation="1" />
+	</track>
+	<track name="fractal#color" folded="0" muteKeyCount="0"
+color="ffa9b250">
+		<key row="0" value="1.000000" interpolation="1" />
+		<key row="896" value="1.000000" interpolation="1" />
+		<key row="960" value="0.330000" interpolation="1" />
 	</track>
 	<track name="lattice#size" folded="0" muteKeyCount="0"
 color="ff4fb292">
@@ -220,8 +227,8 @@ color="ff8850b2">
 color="ffb27474">
 		<key row="0" value="0.000000" interpolation="1" />
 		<key row="256" value="0.000000" interpolation="1" />
-		<key row="260" value="1.000000" interpolation="1" />
-		<key row="678" value="1.000000" interpolation="1" />
+		<key row="260" value="0.750000" interpolation="1" />
+		<key row="678" value="0.750000" interpolation="1" />
 		<key row="708" value="0.000000" interpolation="1" />
 		<key row="832" value="1.000000" interpolation="1" />
 	</track>
