@@ -63,7 +63,7 @@ void main()
             rd.xz *= w(syncs[CAM_YAW]);
 
             for(int i=0; i<MAXSTEP; i++) {                
-                s = vec3((p.xy - path(p.z).xy)*w((p.z-z)*syncs[PATH_TWIST]),p.z);
+                s = vec3((p - path(p.z)).xy*w((p.z-z)*syncs[PATH_TWIST]),p.z);
                 q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
                 s = s + q*abs(s) - s*abs(q);
 
