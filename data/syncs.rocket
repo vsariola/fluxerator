@@ -154,8 +154,7 @@ color="ffb25091">
 color="ff4f71b2">
 		<key row="0" value="4.000000" interpolation="1" />
 		<key row="430" value="4.000000" interpolation="1" />
-		<key row="433" value="21.000000" interpolation="0" />
-		<key row="452" value="64.000000" interpolation="0" />
+		<key row="452" value="32.000000" interpolation="1" />
 		<key row="750" value="64.000000" interpolation="1" />
 		<key row="753" value="11.000000" interpolation="1" />
 		<key row="832" value="11.000000" interpolation="1" />
