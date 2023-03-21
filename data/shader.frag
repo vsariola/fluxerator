@@ -62,20 +62,18 @@ void main()
             rd.yz *= w(syncs[CAM_PITCH]);
             rd.xz *= w(syncs[CAM_YAW]);
 
-            for(int i=0; i<MAXSTEP; i++) {                
+            for(int i=0; i<MAXSTEP; i++) {
                 s = vec3((p - path(p.z)).xy*w((p.z-z)*syncs[PATH_TWIST]),p.z);
                 q = vec3(syncs[MIRROR_X],syncs[MIRROR_Y],0);
                 s = s + q*abs(s) - s*abs(q);
 
-                h = s.y + 1;
+                res = s.y + 1;
 
                 q = s * 3;
                 for(int i = 0; i<4; i++){
-   	               h += abs(sin(q.x))*syncs[LANDSCAPE];
+   	               res += abs(sin(q.x))*syncs[LANDSCAPE];
                    q.xz *= w(.6);
                 }
-
-                res=min(MAXDIST,h);
 
                 q = abs(mod(s,4)-2);
 	            q = max(q,q.yzx);
@@ -99,7 +97,8 @@ void main()
                 q.xy = pModPolar(s.xy,syncs[TUNNEL_LIGHT_REP]);
                 q.z = mod(s.z,1)-.5;
 
-                h = length(q-vec3(syncs[TUNNEL_RADIUS],0,0))-.1;
+                q.x -= syncs[TUNNEL_RADIUS];
+                h = length(q)-.1;
                 res=min(res,h);
                 glow += .00002/(.000003+h*h+syncs[TUNNEL_LIGHTS])*max(syncs[ENV_2]*5-4,0);
 
