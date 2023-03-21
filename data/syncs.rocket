@@ -207,7 +207,7 @@ color="ff4f71b2">
 color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="0" />
 		<key row="64" value="0.030000" interpolation="1" />
-		<key row="1088" value="64.000000" interpolation="1" />
+		<key row="1088" value="64.020004" interpolation="1" />
 	</track>
 	<track name="path#twist" folded="0" muteKeyCount="0"
 color="ff8850b2">
