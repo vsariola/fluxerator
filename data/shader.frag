@@ -46,7 +46,7 @@ void main()
     p.x += syncs[CAM_X];
     u/=iResolution;
     if (syncs[ROW]<0) {
-	    for(int i=0;i<n;++i){
+	    for(int i=0;i<n;i++){
 		    outcolor.r+=texture(postSampler,.5+u*q.r).r;
 		    outcolor.g+=texture(postSampler,.5+u*q.g).g;
 		    outcolor.b+=texture(postSampler,.5+u*q.b).b;
