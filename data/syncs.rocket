@@ -218,9 +218,6 @@ color="ff8850b2">
 		<key row="516" value="0.200000" interpolation="1" />
 		<key row="576" value="0.200000" interpolation="1" />
 		<key row="580" value="0.000000" interpolation="1" />
-		<key row="640" value="0.000000" interpolation="1" />
-		<key row="750" value="0.000000" interpolation="1" />
-		<key row="832" value="0.000000" interpolation="1" />
 	</track>
 	<track name="path#mag" folded="0" muteKeyCount="0"
 color="ffb27474">
