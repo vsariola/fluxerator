@@ -47,9 +47,11 @@ void main()
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;i++){
-		    outcolor.r+=texture(postSampler,.5+u*q.r).r;
-		    outcolor.g+=texture(postSampler,.5+u*q.g).g;
-		    outcolor.b+=texture(postSampler,.5+u*q.b).b;
+		    outcolor+=vec3(
+                texture(postSampler,.5+u*q.r).r,
+                texture(postSampler,.5+u*q.g).g,
+                texture(postSampler,.5+u*q.b).b
+            );
             q *= vec3(.999,.998,.996)*syncs[SCREEN_ZOOM];
 	    }
         outcolor /= n;
