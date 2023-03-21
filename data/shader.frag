@@ -4,7 +4,7 @@
 // SYNCS - do not touch this line, will be replaced with sync definitions
 
 uniform sampler2D textSampler;
-layout(binding = 1) uniform sampler2D sampler;
+layout(binding = 1) uniform sampler2D postSampler;
 layout(location = 0) uniform float syncs[NUM_SYNCS];
 
 out vec3 outcolor;
@@ -47,9 +47,9 @@ void main()
     u/=iResolution;
     if (syncs[ROW]<0) {
 	    for(int i=0;i<n;++i){
-		    outcolor.r+=texture(sampler,.5+u*q.r).r;
-		    outcolor.g+=texture(sampler,.5+u*q.g).g;
-		    outcolor.b+=texture(sampler,.5+u*q.b).b;
+		    outcolor.r+=texture(postSampler,.5+u*q.r).r;
+		    outcolor.g+=texture(postSampler,.5+u*q.g).g;
+		    outcolor.b+=texture(postSampler,.5+u*q.b).b;
             q *= vec3(.999,.998,.996)*syncs[SCREEN_ZOOM];
 	    }
         outcolor /= n;
