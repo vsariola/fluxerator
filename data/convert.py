@@ -49,14 +49,12 @@ def main():
             k = [(start_row, 0, 0)]
         if k[0][0] > start_row:
             k = [(start_row, k[0][1], 0)] + k
-        if k[-1][0] < end_row:
-            k = k + [(end_row, k[-1][1], 0)]
         trackname = str(t.attributes['name'].value)
         tracknames.append(trackname)
         defines[trackname.upper().replace('#', '_')] = str(i+1)
         starts += [curstart]
         curstart += len(k)
-        rowtimes += [[(k[i+1][0] - k[i][0]) if i < len(k)-1 else 1 for i, _ in enumerate(k)]]
+        rowtimes += [[(k[i+1][0] - k[i][0]) if i < len(k)-1 else 32767 for i, _ in enumerate(k)]]
         def tofixed(x): return min(max(round(x*256), -32768), 32767)
         for e in k:
             f = e[1]*256
@@ -64,9 +62,11 @@ def main():
                 print(f"Warning: keyframe value {e[1]} as 8.8 fixed point will be clamped to {f}")
         values += [[tofixed(e[1]) for e in k]]
         types += [[e[2] for e in k]]
+        types[-1][-1] = 0  # set the interpolation mode to 0 for the last keyframe point
     for i in range(args.instruments):
-        defines[f'ENV_{i}'] = str(len(defines))    
+        defines[f'ENV_{i}'] = str(len(defines))
     num_syncs = 1 + len(track) + args.instruments
+    values += [[0]]  # for extra safety, add one zero in end so we never read past the array during interpolation
 
     with open(outinc, 'w') as file:
         file.write(f'numtracks equ {len(track)}\n' +
