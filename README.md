@@ -66,12 +66,14 @@ example, 1.01 will be represented by integer 259, which becomes ~ 1.012.
 
 ## What was learned this time
 
-- DirectSound gives far better sync accuracy than mmsystem.h; there's
-  annoying latency in mmsystem.h. Gargaj was kind enough to show how to
-  use DirectSound. Primary buffers are not needed; DirectSound creates
-  one automatically. Thus, setting up a buffer and playing sound is
-  almost as little bytes as using mmsystem.h. In 2023, no-one who cares
-  about sync accuracy should use the old method.
+- DirectSound gives far better sync accuracy than the mmsystem.h I used
+  in the previous intro. In the previous intro, there was a very
+  annoying latency in mmsystem.h, but this might be dependend on the
+  system configuration and what compatibility settings the intro is ran
+  on. Gargaj was kind enough to show how to use DirectSound. Primary
+  buffers are not needed; DirectSound creates one automatically. Thus,
+  setting up a buffer and playing sound is almost as little bytes as
+  using mmsystem.h, so I believe DirectSound is the better way to go.
 - Glow: glow can be accumulated in the raymarcher map function with glow
   += a/(b+d*d), where a and b are constants and d is the SDF distance to
   object. The glow can be then later added to the pixel color with color
@@ -98,6 +100,10 @@ example, 1.01 will be represented by integer 259, which becomes ~ 1.012.
   glCallLists method. Curiously, I had to adjust glListBase when using
   the text in windowed mode; dunno if it's a bug or if there's something
   I don't understand.
+- Calling
+  `SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);`
+  seems to be a good idea to avoid DPI scaling issues.
+  `SetProcessDPIAware();` was not enough to solve all issues for me.
 
 ## License
 
