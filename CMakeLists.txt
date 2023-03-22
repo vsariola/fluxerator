@@ -31,7 +31,7 @@ if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     set(CMAKE_ASM_NASM_OBJECT_FORMAT win32)
     enable_language(ASM_NASM)
     # remove flags from nasm as the same compile flags were causing trouble
-    set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <DEFINES> -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
+    set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> <DEFINES> -w-label-orphan -f ${CMAKE_ASM_NASM_OBJECT_FORMAT} -o <OBJECT> <SOURCE>")
     add_subdirectory(src)
 endif()
 
