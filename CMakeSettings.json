@@ -115,6 +115,26 @@
       ]
     },
     {
+      "name": "light-720",
+      "generator": "Ninja",
+      "configurationType": "MinSizeRel",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DXRES=1280 -DYRES=720",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "variables": [
+        {
+          "name": "COMPRESS_LEVEL",
+          "value": "LIGHT",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
       "name": "heavy-720",
       "generator": "Ninja",
       "configurationType": "MinSizeRel",
