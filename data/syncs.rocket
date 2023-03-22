@@ -108,7 +108,7 @@ color="ff8850b2">
 color="ff60b250">
 		<key row="0" value="50.000000" interpolation="1" />
 		<key row="380" value="50.000000" interpolation="1" />
-		<key row="388" value="4.000000" interpolation="1" />
+		<key row="390" value="4.000000" interpolation="1" />
 		<key row="494" value="4.000000" interpolation="1" />
 		<key row="497" value="8.000000" interpolation="1" />
 		<key row="686" value="8.000000" interpolation="1" />
@@ -215,8 +215,8 @@ color="ff8850b2">
 		<key row="238" value="0.120000" interpolation="0" />
 		<key row="241" value="0.000000" interpolation="1" />
 		<key row="512" value="0.000000" interpolation="1" />
-		<key row="516" value="0.200000" interpolation="1" />
-		<key row="576" value="0.200000" interpolation="1" />
+		<key row="516" value="0.500000" interpolation="1" />
+		<key row="576" value="0.500000" interpolation="1" />
 		<key row="580" value="0.000000" interpolation="1" />
 	</track>
 	<track name="path#mag" folded="0" muteKeyCount="0"
