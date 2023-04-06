@@ -4,6 +4,8 @@ A windows 4k intro by chlumpie & pestis, released at Revision 2023.
 
 Source: https://github.com/vsariola/fluxerator
 
+Capture: https://www.youtube.com/watch?v=fuSruzkIqsg
+
 ## Prerequisites for building
 
 Rocket is included as a submodule in the repo, so you should clone it
